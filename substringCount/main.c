@@ -11,7 +11,6 @@ int countSubstringInString(char string[], char subString[]) {
 	while (string[i] != 0) {
 		j = 0;
 
-
 		while (string[i+j] == subString[j]) {
 			if (subString[j + 1] == '\n' || subString[j + 1] == 0) {
 				count++;
@@ -19,9 +18,8 @@ int countSubstringInString(char string[], char subString[]) {
 				break;
 			}
 			j++;
-
 		}
-		i += j > 0 ? j: 1;
+		i += 1;
 	}
 	return count;
 }
@@ -63,7 +61,10 @@ int main(void) {
 	fgets(substring, 1000, stdin);
 
 	printf("Count of substring in stirng: %d\n", countSubstringInString(string, substring));
-	testing();
-	return 0;
 
+	if (testing()) {
+		puts("All tests passed successfully");
+	}
+
+	return 0;
 }

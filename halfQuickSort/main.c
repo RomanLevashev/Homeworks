@@ -3,18 +3,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-
 void swap(int* left, int* right) {
 	if (left != right) {
 		*left ^= *right;
 		*right ^= *left;
 		*left ^= *right;
 	}
-
 }
-
-
-
 
 void qSort(int array[], int length) {
 	int pivot = array[0];
@@ -24,7 +19,7 @@ void qSort(int array[], int length) {
 	bool flagRight = false;
 
 	while (left <= right) {
-		if (array[left] > pivot) {
+		if (array[left] >= pivot) {
 			flagLeft = true;
 		}
 		else {
@@ -45,9 +40,10 @@ void qSort(int array[], int length) {
 			right--;
 		}
 	}
-	swap(array, array + right);
+	if (array[0] > array[right]) {
+		swap(array, array + right);
+	}
 }
-
 
 void printArray(int array[], int length) {
 	for (int i = 0; i < length; ++i) {
@@ -56,9 +52,9 @@ void printArray(int array[], int length) {
 	printf("\n");
 }
 
-
 bool test() {
-	int array[20] = { 0 };
+	int array[20] = {0};
+	int length = 20;
 
 	for (int i = 0; i < 20; ++i) {
 		array[i] = rand();
@@ -68,7 +64,7 @@ bool test() {
 	qSort(array, 20);
 	bool needMore = false;
 
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < length; ++i) {
 		if (array[i] == pivot) {
 			needMore = true;
 		}
@@ -91,7 +87,6 @@ bool test() {
 	return true;
 }
 
-
 int main(void) {
 	srand(time(NULL));
 	int array[20] = { 0 };
@@ -99,6 +94,7 @@ int main(void) {
 	for (int i = 0; i < 20; ++i) {
 		array[i] = rand();
 	}
+
 	printArray(array, 20);
 	qSort(array, 20);
 	printArray(array, 20);

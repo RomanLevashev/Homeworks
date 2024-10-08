@@ -17,13 +17,9 @@ bool isBalance(char str[], int length) {
 			bracketCounter--;
 		}
 	}
-	if (bracketCounter != 0) {
-		return false;
-	}
-
-	return true;
+	
+	return bracketCounter == 0;
 }
-
 
 bool testing(void) {
 	if (isBalance("(())((()))()", 12)) {
@@ -31,6 +27,7 @@ bool testing(void) {
 	}
 	else {
 		printf("Test 1 failed\n");
+		return false;
 	}
 
 	if (!(isBalance("))((", 4))) {
@@ -38,6 +35,7 @@ bool testing(void) {
 	}
 	else {
 		printf("Test 2 failed\n");
+		return false;
 	}
 
 	if (!(isBalance("())(", 4))) {
@@ -45,16 +43,19 @@ bool testing(void) {
 	}
 	else {
 		printf("Test 3 failed\n");
+		return false;
 	}
 
 	if (isBalance("()(())(((())))", 14)) {
 		printf("Test 4 complete\n");
 	}
 	else {
+		return false;
 		printf("Test 4 failed\n");
 	}
-}
 
+	return true;
+}
 
 int main(void) {
 	char str[1001] = { 0 };
@@ -62,6 +63,8 @@ int main(void) {
 	fgets(str, 1000, stdin);
 
 	printf(isBalance(str, strlen(str)) ? "Balanced\n" : "Not balanced\n");
-	// testing();
+	if (testing()) {
+		puts("All tests passed successfully");
+	}
 	return 0;
 }

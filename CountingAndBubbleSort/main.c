@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
 void swap(int *left, int *right) {
 	if (left != right) {
 		*left ^= *right;
@@ -12,8 +11,7 @@ void swap(int *left, int *right) {
 	}
 }
 
-
-void countingSort(int array[], int length) {
+void countingSort(int array[], const int length) {
 	int maximum = 0;
 	for (int i = 0; i < length; ++i) {
 		if (array[i] > maximum) {
@@ -37,12 +35,10 @@ void countingSort(int array[], int length) {
 	free(countNumbers);
 }
 
-
-void bubbleSort(int array[], int length) {
+void bubbleSort(int array[], const int length) {
 	for (int i = 1; i < length; ++i) {
 		if (array[i] < array[i - 1]) {
 			int j = i;
-
 			while (j > 0 && array[j] < array[j - 1]) {
 				swap(array + j - 1, array + j);
 				j--;
@@ -51,33 +47,36 @@ void bubbleSort(int array[], int length) {
 	}
 }
 
-
-void printArray(int array[], int length) {
+void printArray(int array[], const int length) {
 	for (int i = 0; i < length; ++i) {
 		printf("%d ", array[i]);
 	}
 	printf("\n");
 }
 
-
-bool testing(int array[], int length, int (*sort)(int*, int)) {
+bool testing(int array[], int length, void (*sort)(int*, int)) {
 	sort(array, length);
 	for (int i = 0; i < length - 1; ++i) {
 		if (array[i] > array[i + 1]) {
-			puts("Test failed");
 			return false;
 		}
-
 	}
-	puts("Test complete");
 	return true;
 }
 
-
 int main(void) {
-	int length = 100000;
-	int *array = calloc(length, sizeof(int));
-	int *copyArray = calloc(length, sizeof(int));
+	const int length = 100000;
+	int *array = NULL;
+	int *copyArray = NULL;
+
+	while (array == NULL) {
+		array = calloc(length, sizeof(int));
+	}
+
+	while (copyArray == NULL) {
+		copyArray = calloc(length, sizeof(int));
+	}
+
 	srand(time(NULL));
 	
 	for (int i = 0; i < length; ++i) {
@@ -85,10 +84,22 @@ int main(void) {
 		array[i] = copyArray[i] = temp;
 	}
 
-	//testing(array, length, countingSort);
-	//testing(copyArray, length, bubbleSort);
+/*
+	if (testing(array, length, countingSort)) {
+		puts("Counting sort passed the test.");
+	}
+	else {
+		puts("Counting sort didn't pass the test.");
+	}
 
-	
+	if (testing(copyArray, length, bubbleSort)) {
+		puts("Bubble sort passeed the test.");
+	}
+	else {
+		puts("Bubble sort didn't passed the test.");
+	}
+*/	
+
 	clock_t beforeBubble = clock();
 	bubbleSort(array, length);
 	clock_t afterBubble = 0, beforeCounting = 0;
