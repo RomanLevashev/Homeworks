@@ -19,8 +19,7 @@ int quickSort(int array[], int length) {
 	int pivot = array[0];
 	int left = 1;
 	int right = length - 1;
-	bool flagLeft = false;
-	bool flagRight = false;
+	bool flagLeft = false, flagRight = false;
 
 	while (left <= right) {
 		if (array[left] >= pivot) {
@@ -52,6 +51,7 @@ int quickSort(int array[], int length) {
 	}
 	else {
 		quickSort(array + 1, length - 1);
+		return 0;
 	}
 }
 
@@ -84,8 +84,8 @@ void printArray(int array[], int length) {
 }
 
 bool testing() {
-	int length = 10;
-	int array[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	const int length = 20;
+	int array[20] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -7, -1, - 30, -5, -229, -137};
 	
 	if (!inArray(array, length, 0)) {
 		puts("Test 1 failed");
@@ -101,11 +101,26 @@ bool testing() {
 		return false;
 	}
 	return true;
+
+	if (!inArray(array, length, -30)) {
+		puts("Test 4 failed");
+		return false;
+	}
+
+	if (!inArray(array, length, -229)) {
+		puts("Test 5 failed");
+		return false;
+	}
+
+	if (!inArray(array, length, -7)) {
+		puts("Test 3 failed");
+		return false;
+	}
+	return true;
 }
 
 void search(int n, int nArray[], int k, int kArray[]) {
 	quickSort(nArray, n);
-	quickSort(kArray, n);
 	printf("nArray: ");
 	printArray(nArray, n);
 	printf("kArray: ");
@@ -126,26 +141,30 @@ int main(void) {
 		puts("All test passed successfully");
 	}
 	srand(time(NULL));
-	int n = 0, k = 0, inputCount = 0;
+	int n = 0;
+	int k = 0;
+	int inputCount = 0;
 
-	do {
-		printf("Enter n and k through a space: ");
-		inputCount = scanf("%d %d", &n, &k);
+	while (n < 1 || k < 1) {
+		do {
+			printf("Enter n and k through a space: ");
+			inputCount = scanf("%d %d", &n, &k);
 
-		if (inputCount != 2) {
-			puts("Invalid input. Please try again.");
-			while (getchar() != '\n');
-		}
-	} while (inputCount != 2);
-	
+			if (inputCount != 2) {
+				puts("Invalid input. Please try again.");
+				while (getchar() != '\n');
+			}
+		} while (inputCount != 2);
+	}
+
 	int* nArray = calloc(n, sizeof(int));
 	int* kArray = calloc(k, sizeof(int));
 
 	for (int i = 0; i < n; ++i) {
-		nArray[i] = rand();
+		nArray[i] = rand() % 10;
 	}
 	for (int i = 0; i < k; ++i) {
-		kArray[i] = rand();
+		kArray[i] = rand() % 10;
 	}
 	search(n, nArray, k, kArray);
 	free(nArray);

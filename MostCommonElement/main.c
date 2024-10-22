@@ -52,6 +52,7 @@ int quickSort(int array[], int length) {
 	}
 	else {
 		quickSort(array + 1, length - 1);
+		return 0;
 	}
 }
 
@@ -64,7 +65,7 @@ int mostCommonElement(int array[], int length) {
 
 	for (int i = 1; i < length; ++i) {
 		if (array[i] == last) {
-			count += 1;
+			count++;
 		}
 		if (array[i] != last || i == length - 1) {
 			if (count > max_count) {
@@ -79,23 +80,36 @@ int mostCommonElement(int array[], int length) {
 }
 
 bool testing(void) {
-	int first_array[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };
-	if (mostCommonElement(first_array, 20) != 5) {
+	int firstArray[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };
+	if (mostCommonElement(firstArray, 20) != 5) {
 		puts("Test 1 failed.");
 		return false;
 	}
 
-	int second_array[21] = { 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6 };
-	if (mostCommonElement(second_array, 21) != 6) {
+	int secondArray[21] = { 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6 };
+	if (mostCommonElement(secondArray, 21) != 6) {
 		puts("Test 2 failed.");
 		return false;
 	}
 
-	int third_array[11] = {2, 3, 4, 5, 3, 2, 2, 2, 2, 3, 3};
-	if (mostCommonElement(third_array, 11) != 2) {
+	int thirdArray[11] = {2, 3, 4, 5, 3, 2, 2, 2, 2, 3, 3};
+	if (mostCommonElement(thirdArray, 11) != 2) {
 		puts("Test 3 failed.");
 		return false;
 	}
+
+	int fourthArray[15] = { -1, -3, -4, -5, -5, -5, 10, 29, 32, 10, 29, 29, 3, 3, 3};
+	if (mostCommonElement(fourthArray, 15) != -5) {
+		puts("Test 4 failed");
+		return false;
+	}
+
+	int unitArray[1] = { 9 };
+	if (mostCommonElement(unitArray, 1) != 9) {
+		puts("Test 5 failed");
+		return false;
+	}
+	return true;
 }
 
 int main(void) {

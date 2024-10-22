@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <time.h>;
-
+#include <time.h>
+#include <math.h>
 
 int fibonacciRec(int number) {
 	if (number == 1 || number == 2) {
@@ -10,7 +10,6 @@ int fibonacciRec(int number) {
 
 	return fibonacciRec(number - 1) + fibonacciRec(number - 2);
 }
-
 
 int fibonacciIter(int number) {
 	if (number <= 2) {
@@ -60,8 +59,9 @@ bool test() {
 		puts("Test 4 failed");
 		return false;
 	}
-}
 
+	return true;
+}
 
 int main(void) {
 	for (int i = 1; i < 45; ++i) {
