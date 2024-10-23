@@ -19,7 +19,8 @@ int quickSort(int array[], int length) {
 	int pivot = array[0];
 	int left = 1;
 	int right = length - 1;
-	bool flagLeft = false, flagRight = false;
+	bool flagLeft = false;
+	bool flagRight = false;
 
 	while (left <= right) {
 		if (array[left] >= pivot) {
@@ -38,7 +39,8 @@ int quickSort(int array[], int length) {
 
 		if (flagLeft && flagRight) {
 			swap(array + left, array + right);
-			flagLeft = flagRight = false;
+			flagLeft = false;
+			flagRight = false;
 			left++;
 			right--;
 		}

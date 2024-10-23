@@ -39,7 +39,8 @@ int quickSort(int array[], int length) {
 
 		if (flagLeft && flagRight) {
 			swap(array + left, array + right);
-			flagLeft = flagRight = false;
+			flagLeft = false;
+			flagRight = false;
 			left++;
 			right--;
 		}
