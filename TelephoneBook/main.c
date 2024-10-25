@@ -9,23 +9,23 @@ enum options {quit, add, print, findPhoneByName, findNameByPhone, save};
 
 void clearBuffer() {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF); // Читаем до конца строки или конца файла
+    while ((c = getchar()) != '\n' && c != EOF); // Р§РёС‚Р°РµРј РґРѕ РєРѕРЅС†Р° СЃС‚СЂРѕРєРё РёР»Рё РєРѕРЅС†Р° С„Р°Р№Р»Р°
 }
 
 void chooseOption(int choice, FILE* file) {
     switch (choice) {
     case add: {
-        puts("Введите имя: ");
+        puts("Р’РІРµРґРёС‚Рµ РёРјСЏ: ");
         char name[100] = { 0 };
         fgets(name, 99, stdin);
         name[strcspn(name, "\n")] = '\0';
 
-        puts("Введите телефон: ");
-        char phone[100] = { 0 };
+        puts("Р’РІРµРґРёС‚Рµ С‚РµР»РµС„РѕРЅ: ");
+        char phone[100] = { 0 }
         fgets(phone, 99, stdin);
         phone[strcspn(phone, "\n")] = '\0';
         fprintf(file, "%s %s\n", name, phone);
-        puts("Запись добавлена");
+        puts("Р—Р°РїРёСЃСЊ РґРѕР±Р°РІР»РµРЅР°");
         break;
     }
     case print: {
@@ -43,7 +43,7 @@ void chooseOption(int choice, FILE* file) {
         int count = 0;
         char* fgetsResult = NULL;
         char name[100] = { 0 };
-        puts("Введите имя: ");
+        puts("Р’РІРµРґРёС‚Рµ РёРјСЏ: ");
         fgets(name, 99, stdin);
         fseek(file, 0, SEEK_SET);
         name[strcspn(name, "\n")] = '\0';
@@ -71,7 +71,7 @@ void chooseOption(int choice, FILE* file) {
         } while (pointer == NULL && fgetsResult != NULL);
 
         if (count < 1) {
-            puts("Данного человека нет в базе");
+            puts("Р”Р°РЅРЅРѕРіРѕ С‡РµР»РѕРІРµРєР° РЅРµС‚ РІ Р±Р°Р·Рµ");
         }
         break;
 
@@ -82,7 +82,7 @@ void chooseOption(int choice, FILE* file) {
         int count = 0;
         char* fgetsResult = NULL;
         char phone[100] = { 0 };
-        puts("Введите телефон: ");
+        puts("Р’РІРµРґРёС‚Рµ С‚РµР»РµС„РѕРЅ: ");
         fgets(phone, 99, stdin);
         fseek(file, 0, SEEK_SET);
         phone[strcspn(phone, "\n")] = '\0';
@@ -107,14 +107,14 @@ void chooseOption(int choice, FILE* file) {
         } while (pointer == NULL && fgetsResult != NULL);
 
         if (count < 1) {
-            puts("Данного человека нет в базе");
+            puts("Р”Р°РЅРЅРѕРіРѕ С‡РµР»РѕРІРµРєР° РЅРµС‚ РІ Р±Р°Р·Рµ");
         }
         break;
     }
     case save:
         fclose(file);
         file = fopen("TelephoneBook.txt", "a+");
-        puts("Сохранение выполнено");
+        puts("РЎРѕС…СЂР°РЅРµРЅРёРµ РІС‹РїРѕР»РЅРµРЅРѕ");
         break;
 
     case quit:
@@ -122,7 +122,7 @@ void chooseOption(int choice, FILE* file) {
         return 0;
 
     default:
-        puts("Неправильный ввод. Повторите снова.");
+        puts("РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ РІРІРѕРґ. РџРѕРІС‚РѕСЂРёС‚Рµ СЃРЅРѕРІР°.");
     }
 }
 
@@ -132,12 +132,12 @@ int main(void) {
     FILE* file = fopen("TelephoneBook.txt", "a+");
 
     while (true) {
-        puts("0 - Выйти\n\
-1 - Добавить запись(имя и телефон)\n\
-2 - Распечатать все имеющиеся записи\n\
-3 - Найти телефон по имени\n\
-4 - Найти имя по телефону\n\
-5 - Сохранить текущие данные в файл");
+        puts("0 - Р’С‹Р№С‚Рё\n\
+1 - Р”РѕР±Р°РІРёС‚СЊ Р·Р°РїРёСЃСЊ(РёРјСЏ Рё С‚РµР»РµС„РѕРЅ)\n\
+2 - Р Р°СЃРїРµС‡Р°С‚Р°С‚СЊ РІСЃРµ РёРјРµСЋС‰РёРµСЃСЏ Р·Р°РїРёСЃРё\n\
+3 - РќР°Р№С‚Рё С‚РµР»РµС„РѕРЅ РїРѕ РёРјРµРЅРё\n\
+4 - РќР°Р№С‚Рё РёРјСЏ РїРѕ С‚РµР»РµС„РѕРЅСѓ\n\
+5 - РЎРѕС…СЂР°РЅРёС‚СЊ С‚РµРєСѓС‰РёРµ РґР°РЅРЅС‹Рµ РІ С„Р°Р№Р»");
         scanf("%d", &choice);
         clearBuffer();
 
