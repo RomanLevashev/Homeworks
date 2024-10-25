@@ -21,7 +21,7 @@ void chooseOption(int choice, FILE* file) {
         name[strcspn(name, "\n")] = '\0';
 
         puts("Введите телефон: ");
-        char phone[100] = { 0 }
+        char phone[100] = { 0 };
         fgets(phone, 99, stdin);
         phone[strcspn(phone, "\n")] = '\0';
         fprintf(file, "%s %s\n", name, phone);
