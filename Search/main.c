@@ -11,9 +11,9 @@ void swap(int* left, int* right) {
 	}
 }
 
-int quickSort(int array[], int length) {
+void quickSort(int array[], int length) {
 	if (length < 2) {
-		return 0;
+		return;
 	}
 
 	int pivot = array[0];
@@ -49,12 +49,11 @@ int quickSort(int array[], int length) {
 		swap(array, array + right);
 		quickSort(array, array + right - array);
 		quickSort(array + right, array + length - (array + right));
-		return 0;
 	}
 	else {
 		quickSort(array + 1, length - 1);
-		return 0;
 	}
+	return;
 }
 
 bool inArray(int array[], int length, int searchingElement) {
@@ -139,8 +138,11 @@ void search(int n, int nArray[], int k, int kArray[]) {
 }
 
 int main(void) {
-	if (testing) {
+	if (testing()) {
 		puts("All test passed successfully");
+	}
+	else {
+		return 1;
 	}
 	srand(time(NULL));
 	int n = 0;

@@ -15,16 +15,16 @@ int fibonacciIter(int number) {
 	if (number <= 2) {
 		return 1;
 	}
-	int a = 1;
-	int b = 1;
-	int c = 0;
+	int pastPrevious = 1;
+	int previous = 1;
+	int current = 0;
 
 	for (int i = 3; i <= number; ++i) {
-		c = a + b;
-		a = b;
-		b = c;
+		current = pastPrevious + previous;
+		pastPrevious = previous;
+		previous = current;
 	}
-	return c;
+	return current;
 }
 
 bool test() {
@@ -64,6 +64,10 @@ bool test() {
 }
 
 int main(void) {
+	if (!test()) {
+		return 1;
+	}
+
 	for (int i = 1; i < 45; ++i) {
 		clock_t timeBeforeRec = clock();
 		fibonacciRec(i);
