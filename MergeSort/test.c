@@ -51,4 +51,13 @@ bool test() {
     }
 
     return true;
+
+    fclose(file);
+    fclose(fileWithSortedNames);
+    fclose(fileWithSortedPhones);
+    deleteList(listForNames);
+    deleteList(listForPhones);
+    deleteList(listWithSortedNames);
+    deleteList(listWithSortedPhones);
+    
 }

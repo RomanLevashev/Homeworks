@@ -9,6 +9,8 @@ int maxPhoneLen = 15;
 List* createList(void) {
     List* list = malloc(sizeof(List));
     list->head = NULL;
+
+    return list;
 }
 
 int compare(char* first, char* second, const int length, int kind) {
@@ -51,6 +53,7 @@ void deleteList(List* list) {
         free(current);
         current = next;
     }
+    free(list);
 }
 
 void split(Node* source, Node** firstHalf, Node** secondHalf) {

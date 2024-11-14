@@ -38,6 +38,5 @@ int main(void) {
     }    
     printList(list);
     deleteList(list);
-    free(list);
     fclose(file);
 }
