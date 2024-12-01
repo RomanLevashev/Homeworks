@@ -1,44 +1,39 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "mostCommonElement.h"
+#include "quickSort.h"
 
-bool testing(void) {
-	int firstArray[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };
-	if (mostCommonElement(firstArray, 20) != 5) {
-		puts("Test 1 failed.");
-		return false;
-	}
+bool testing(void);
 
-	int secondArray[21] = { 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6 };
-	if (mostCommonElement(secondArray, 21) != 6) {
-		puts("Test 2 failed.");
-		return false;
-	}
+int mostCommonElement(int array[], int length) {
+	quickSort(array, length);
+	int count = 1;
+	int max_count = 1;
+	int commonElement = array[0];
+	int last = array[0];
 
-	int thirdArray[11] = { 2, 3, 4, 5, 3, 2, 2, 2, 2, 3, 3 };
-	if (mostCommonElement(thirdArray, 11) != 2) {
-		puts("Test 3 failed.");
-		return false;
+	for (int i = 1; i < length; ++i) {
+		if (array[i] == last) {
+			count++;
+		}
+		if (array[i] != last || i == length - 1) {
+			if (count > max_count) {
+				commonElement = last;
+				max_count = count;
+			}
+			last = array[i];
+			count = 1;
+		}
 	}
-
-	int fourthArray[15] = { -1, -3, -4, -5, -5, -5, 10, 29, 32, 10, 29, 29, 3, 3, 3 };
-	if (mostCommonElement(fourthArray, 15) != -5) {
-		puts("Test 4 failed");
-		return false;
-	}
-
-	int unitArray[1] = { 9 };
-	if (mostCommonElement(unitArray, 1) != 9) {
-		puts("Test 5 failed");
-		return false;
-	}
-	return true;
+	return commonElement;
 }
 
 int main(void) {
 	if (testing()) {
 		puts("All test passed successfully");
+	}
+	else {
+		return 1;
 	}
 	int n = 10;
 	FILE* inputData = fopen("file.txt", "r");

@@ -18,12 +18,15 @@
     <ClCompile Include="main.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="mostCommonElement.c">
+    <ClCompile Include="quickSort.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="test.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mostCommonElement.h">
+    <ClInclude Include="quickSort.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
