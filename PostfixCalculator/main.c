@@ -5,19 +5,20 @@
 #include <stdlib.h>
 
 int postfixCalculator(char* expression, int length) {
-    stackObject* top = NULL;
+    int returnResult = NULL;
+    StackObject* top = NULL;
     int result = 0;
     for (int i = 0; i < length; ++i) {
         char current = expression[i];
-        if (current == '\n' || current == 0) {
+        if (current == '\n' || current == '\0') {
             if (top != NULL) {
-                return pop(&top);
+                returnResult =  pop(&top);
+                break;
             }
         }
 
         if (isdigit(current)) {
-            int temp = current - '0';
-            add(&top, temp);
+            push(&top, current - '0');
         }
 
         if (current == '+' || current == '-' || current == '*' || current == '/') {
@@ -43,16 +44,18 @@ int postfixCalculator(char* expression, int length) {
                 }
                 result = firstOperand / secondOperand;
             }
-            add(&top, result);
+            push(&top, result);
         }
     }
-    if (top != NULL) {
-        return pop(&top);
+    if (top != NULL && returnResult == NULL) {
+        returnResult = pop(&top);
     }
+    freeStack(top);
+    return returnResult;
 }
 
-bool testing(void) {
-    int length = 100;
+bool runTests(void) {
+    const int length = 100;
     if (postfixCalculator("3 4 + ", length) != 7) {
         return false;
     }
@@ -72,10 +75,14 @@ bool testing(void) {
 }
 
 int main(void) {
-    if (!testing()) {
+    if (!runTests()) {
+        puts("Tests failed");
         return 1;
     }
-    int length = 100;
+    else {
+        puts("All tests were passed successfully");
+    }
+    const int length = 100;
     char expression[100] = { 0 };
     puts("Enter the expression in postfix form: ");
     fgets(expression, length - 1, stdin);
