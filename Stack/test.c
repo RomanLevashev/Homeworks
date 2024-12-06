@@ -2,12 +2,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-bool testing(void) {
-    stackObject* top = NULL;
-    add(&top, 'a');
-    add(&top, 'b');
-    add(&top, 'c');
-    add(&top, 'd');
+bool runTests(void) {
+    StackObject* top = NULL;
+    push(&top, 'a');
+    push(&top, 'b');
+    push(&top, 'c');
+    push(&top, 'd');
     if (pop(&top) != 'd') {
         return false;
     }
@@ -23,15 +23,15 @@ bool testing(void) {
     if (pop(&top) != NULL) {
         return false;
     }
+    push(&top, 'a');
+    push(&top, 'b');
+    push(&top, 'c');
+    push(&top, 'd');
+    freeStack(top);
+    top = NULL;
     return true;
 }
 
 int main(void) {
-    if (testing()) {
-        return 0;
-    }
-
-    else {
-        return 1;
-    }
+    runTests();
 }

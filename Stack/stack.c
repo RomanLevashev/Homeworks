@@ -2,20 +2,31 @@
 #include <stdlib.h>
 #include "stack.h"
 
-stackObject* add(stackObject** top, char data) {
-    stackObject* pointer = malloc(sizeof(stackObject));
+void push(StackObject** top, char data) {
+    StackObject* pointer = malloc(sizeof(StackObject));
+    if (pointer == NULL) {
+        return;
+    }
     pointer->data = data;
     pointer->next = *top;
     *top = pointer;
 }
 
-char pop(stackObject** top) {
+char pop(StackObject** top) {
     if (*top == NULL) {
         return *top;
     }
     char data = (*top)->data;
-    stackObject* nextObject = (*top)->next;
+    StackObject* nextObject = (*top)->next;
     free(*top);
     *top = nextObject;
     return data;
+}
+
+void freeStack(StackObject* top) {
+    while (top != NULL) {
+        StackObject* temp = top;
+        top = top->next;
+        free(temp);
+    }
 }
