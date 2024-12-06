@@ -8,14 +8,20 @@ int getPriority(char operand) {
     if (operand == '+' || operand == '-') {
         return 2;
     }
-    if (operand == "*" || operand == '/') {
+    if (operand == '+' || operand == '/') {
         return 1;
     }
     return 0;
 }
 
+void addSymbolToExpression(int* resultIndex, char* resultExpression,  char current) {
+    resultExpression[*resultIndex] = current;
+    resultExpression[*resultIndex + 1] = ' ';
+    *resultIndex += 2;
+}
+
 void postfixConverter(char expression[], int length, char resultExpression[]) {
-    stackObject* top = NULL;
+    StackObject* top = NULL;
     int resultIndex = 0;
 
     for (int i = 0; i < length; ++i) {
@@ -24,13 +30,11 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
             break;
         }
         if (isdigit(current)) {
-            resultExpression[resultIndex] = current;
-            resultExpression[resultIndex + 1] = ' ';
-            resultIndex += 2;
+            addSymbolToExpression(&resultIndex, resultExpression, current);
         }
 
         if (current == '(') {
-            add(&top, current);
+            push(&top, current);
         }
 
         if (current == '+' || current == '/' || current == '*' || current == '-') {
@@ -39,37 +43,32 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
                 int topStackPriority = getPriority(top->data);
 
                 while (currentPriority <= topStackPriority && top != NULL && top->data != '(') {
-                    resultExpression[resultIndex] = pop(&top);
-                    resultExpression[resultIndex + 1] = ' ';
-                    resultIndex += 2;
+                    addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
                 }
             }
-            add(&top, current);
+            push(&top, current);
         }
 
         if (current == ')') {
             while (top != NULL && top->data != '(') {
-                resultExpression[resultIndex] = pop(&top);
-                resultExpression[resultIndex + 1] = ' ';
-                resultIndex += 2;
+                addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
             }
-            if (top->data == '(') {
+            if (top != NULL && top->data == '(') {
                 pop(&top);
             }
         }
     }
     while (top != NULL) {
-        resultExpression[resultIndex] = pop(&top);
-        resultExpression[resultIndex + 1] = ' ';
-        resultIndex += 2;
+        addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
     }
+    free(top);
 }
 
-bool testing(void) {
-    int length = 100;
+bool runTests(void) {
+    const int length = 100;
     char expression[100] = "(3+4)*(2-(1+5))";
     char result[100] = { 0 };
-    char wantedResult[100] = "3 4 + 2 1 5 + - * ";
+    char expectedResult[100] = "3 4 + 2 1 5 + - * ";
 
     postfixConverter(expression, length, result);
 
@@ -77,7 +76,7 @@ bool testing(void) {
         if (result[i] == 0) {
             break;
         }
-        if (result[i] != wantedResult[i]) {
+        if (result[i] != expectedResult[i]) {
             return false;
         }
     }
@@ -94,11 +93,15 @@ void printArray(char array[], int length) {
 }
 
 int main(void) {
-    if (!testing()) {
+    if (!runTests()) {
+        puts("Tests failed");
         return 1;
     }
+    else {
+        puts("All tests were passed successfully");
+    }
 
-    int length = 100;
+    const int length = 100;
     char expression[100] = { 0 };
     char resultExpression[200] = { 0 };
     puts("Enter the expression in infix form:");
