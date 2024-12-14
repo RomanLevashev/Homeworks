@@ -42,6 +42,7 @@ void parseFile(FILE* file, HashTable* table) {
         memset(buffer, 0, 100);
         index = 0;
     }
+    free(buffer);
 }
 
 bool runTests(void);
@@ -61,5 +62,7 @@ int main(void) {
     printf("Average List Length  %f\n", calculateAvgListLength(table));
     printf("Maximum List Length  %d\n", calculateMaxListLength(table));
     printTable(table);
+    freeTable(&table);
+    fclose(file);
     return 0;
 }

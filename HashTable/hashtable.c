@@ -30,8 +30,10 @@ void printTable(HashTable* table) {
 
 void freeTable(HashTable** table) {
     for (int i = 0; i < TABLE_SIZE; i++) {
-        freeList(((*table)->elements)[i]);
-        ((*table)->elements)[i] = NULL;
+        if (((*table)->elements)[i] != NULL) {
+            freeList(((*table)->elements)[i]);
+            ((*table)->elements)[i] = NULL;
+        }
     }
     free(*table);
     *table = NULL;

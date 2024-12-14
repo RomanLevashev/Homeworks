@@ -28,6 +28,7 @@ Node* insertOrIncreaseCounter(Node* root, char* word) {
     Node* searchingNode = findNode(root, word);
     if (searchingNode != NULL) {
         (searchingNode->count)++;
+        free(word);
         return searchingNode;
     }
     Node* node = createNode(word);
@@ -36,8 +37,8 @@ Node* insertOrIncreaseCounter(Node* root, char* word) {
 }
 
 void freeList(Node* root) {
-    freeList(root->next);
     if (root != NULL) {
+        freeList(root->next);
         free(root->word);
         free(root);
     }

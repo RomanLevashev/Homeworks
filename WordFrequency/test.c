@@ -35,5 +35,7 @@ bool runTests(void) {
     if (getElementCountFromTable(table, "a") != 0 || getElementCountFromTable(table, "b") != 0 || getElementCountFromTable(table, "c") != 0) {
         return false;
     }
+    fclose(testFile);
+    freeTable(&table);
     return true;
 }
