@@ -2,10 +2,48 @@
 #include "graph.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
+#include <string.h>
 
 void setValueTo(int* array, int length, int value) {
     for (int i = 0; i < length; ++i) {
         array[i] = value;
+    }
+}
+
+bool allIsVisited(bool* visitedCities, bool* allowedCities, int citiesCount) {
+    for (int i = 0; i < citiesCount; i++) {
+        if (visitedCities[i] == false && allowedCities[i] == true) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void dijkstra(int start, int previousLength, int** adjMatrix, bool* allowedCities, bool* visitedCities, int citiesCount, int* distances, bool* employmentOfCities) {
+    visitedCities[start] = true;
+    int minDistance = INT_MAX;
+    int minCity = -1;
+    for (int end = 0; end < citiesCount; end++) {
+        if (!visitedCities[end] && !employmentOfCities[end]) {
+            if (adjMatrix[start][end] != 0) {
+                int currentDistance = adjMatrix[start][end];
+                if (distances[end] > currentDistance + previousLength) {
+                    distances[end] = currentDistance + previousLength;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < citiesCount; i++) {
+        if (distances[i] != 0 && distances[i] < minDistance & allowedCities[i]) {
+            minDistance = distances[i];
+            minCity = i;
+        }
+    }   
+    if (minCity != -1) {
+        if (!allIsVisited(visitedCities, allowedCities, citiesCount)) {
+            dijkstra(minCity, minDistance, adjMatrix, allowedCities, visitedCities, citiesCount, distances, employmentOfCities);
+        }
     }
 }
 
@@ -51,60 +89,115 @@ Road* createRoads(FILE* file, int count) {
     return roads;
 }
 
-Road* createStates(FILE* file, int countStates, int maxCountOfCities, int* employmentOfCities) {
-    State* states = malloc(countStates * sizeof(State));
+Road* createStates(FILE* file, int statesCount, int citiesCount, bool* employmentOfCities) {
+    State* states = malloc(statesCount * sizeof(State));
     if (states == NULL) {
         return NULL;
     }
 
-    for (int i = 0; i < countStates; ++i) {
+    for (int i = 0; i < statesCount; ++i) {
         State* currentState = states + i;
-        int* cities = malloc(maxCountOfCities * sizeof(int));
-        setValueTo(cities, maxCountOfCities, -1);
-
+        int* cities = malloc(citiesCount * sizeof(int));
         if (cities == NULL) {
+            for (int j = 0; j < statesCount; ++j) {
+                if (j < i) {
+                    free((states + j)->cities);
+                }
+                free(states + j);
+            }
             return NULL;
         }
+        setValueTo(cities, citiesCount, -1);
 
         currentState->cities = cities;
         fscanf(file, "%d", cities);
         currentState->number = i;
         currentState->citiesCount = 1;
-        employmentOfCities[*cities] = 0;
+        employmentOfCities[*cities] = true;
     }
+    return states;
 }
 
-void addCityToState(State* state, int** adjMatrix, int* employmentOfCities, int citiesCount) {
-    int* stateCities = state->cities;
-    int resultCityNumber = -1;
-    int minimumPathToCity = -1;
-    for (int i = 0; i < citiesCount; ++i) {
-        if (employmentOfCities[i] != 0) {
-            int minimumumPathLengthToCurrentCity = 0;
-            for (int j = 0; j < citiesCount; ++j) {
-                if (stateCities[j] == -1) {
-                    break;
-                }
-                int path = adjMatrix[stateCities[j]][i];
+bool* getAllowedCities(State* state, int citiesCount) {
+    bool* allowedCities = calloc(citiesCount, sizeof(bool));
 
-                if (path != 0 && (minimumumPathLengthToCurrentCity > path || minimumumPathLengthToCurrentCity == 0)) {
-                    minimumumPathLengthToCurrentCity = path;
-                }
-            }
-            if (minimumumPathLengthToCurrentCity != 0 && (minimumumPathLengthToCurrentCity < minimumPathToCity || minimumPathToCity == -1)) {
-                minimumPathToCity = minimumumPathLengthToCurrentCity;
-                resultCityNumber = i;
-            }
+    if (allowedCities == NULL) {
+        perror("Memory allocate error");
+        return NULL;
+    }
+
+    for (int i = 0; i < citiesCount; ++i) {
+        int stateCity = (state->cities)[i];
+        if (stateCity == -1) {
+            break;
+        }
+        allowedCities[stateCity] = true;
+    }
+    return allowedCities;
+}
+
+int getMinCity(int* distances, int citiesCount) {
+    int minDistance = INT_MAX;
+    int minCity = -1;
+    for (int i = 0; i < citiesCount; i++) {
+        if (distances[i] != 0 && distances[i] < minDistance) {
+            minDistance = distances[i];
+            minCity = i;
         }
     }
-    if (resultCityNumber != -1) {
-        employmentOfCities[resultCityNumber] = 0;
-        for (int i = 0; i < citiesCount; ++i) {
-            if ((state->cities)[i] == -1) {
-                (state->cities)[i] = resultCityNumber;
-                break;
-            }
-        }
-        (state->citiesCount)++;
+    return minCity;
+}
+
+bool addCityToState(State* state, int** adjMatrix, bool* employmentOfCities, int citiesCount) {
+    int* stateCities = state->cities;
+    int* distances = malloc(sizeof(int) * citiesCount);
+    bool* allowedCities = getAllowedCities(state, citiesCount);
+    if (allowedCities == NULL) {
+        return false;
     }
+    bool* visitedCities = calloc(citiesCount, sizeof(bool));
+    if (visitedCities == NULL) {
+        perror("Memory allocate error");
+        free(allowedCities);
+        return false;
+    }
+    int minDistanceOfAllCities = INT_MAX;
+    int minCity = -1;
+
+    for (int i = 0; i < citiesCount; ++i) {
+        memset(visitedCities, 0, citiesCount);
+        int currentCity = (state->cities)[i];
+        if (currentCity == -1) {
+            break;
+        }
+        setValueTo(distances, citiesCount, INT_MAX);
+        distances[i] = 0;
+        dijkstra(currentCity, 0, adjMatrix, allowedCities, visitedCities, citiesCount, distances, employmentOfCities);
+        int minCurrentCity = getMinCity(distances, citiesCount);
+
+        if (minCurrentCity == -1) {
+            continue;
+        }
+
+        if (distances[minCurrentCity] < minDistanceOfAllCities) {
+            minDistanceOfAllCities = distances[minCurrentCity];
+            minCity = minCurrentCity;
+        }
+    }
+    if (minCity == -1) {
+        return false;
+    }
+
+    employmentOfCities[minCity] = 1;
+    state->citiesCount++;
+    for (int i = 0; i < citiesCount; ++i) {
+        if ((state->cities)[i] == -1) {
+            (state->cities)[i] = minCity;
+            break;
+        }
+    }
+    free(allowedCities);
+    free(visitedCities);
+    free(distances);
+    return true;
 }

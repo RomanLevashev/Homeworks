@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "graph.h"
 #include <stdbool.h>
+#include "test.h"
 
 void printStates(State* states, int countStates) {
     for (int i = 0; i < countStates; ++i) {
@@ -22,37 +23,56 @@ void states(FILE* file) {
     fscanf(file, "%d %d", &citiesCount, &roadsCount);
     Road* roads = createRoads(file, roadsCount);
     if (roads == NULL) {
+        perror("Memory allocate error");
         return;
     }
 
     fscanf(file, "%d", &statesCount);
-    int* employmentOfCities = malloc(citiesCount * sizeof(int));
-    setValueTo(employmentOfCities, citiesCount, 1);
+    bool* employmentOfCities = calloc(citiesCount, sizeof(bool));
     State* states = createStates(file, statesCount, citiesCount, employmentOfCities);
     if (states == NULL) {
+        for (int i = 0; i < roadsCount; ++i) {
+            free(roads + i);
+        }
+        perror("Memory allocate error");
         return;
     }
 
     int** adjMatrix = createAdjMatrix(citiesCount, roadsCount, roads);
+    int freeCitiesCount = citiesCount - statesCount;
+    int index = 0;
 
+    while (freeCitiesCount > 0) {
+        State* currentState = states + (index % statesCount);
+        bool isAdded = addCityToState(currentState, adjMatrix, employmentOfCities, citiesCount);
+        index++;
+        if (isAdded) {
+            freeCitiesCount--;
+        }
+    }
+    printStates(states, statesCount);
+    free(employmentOfCities);
+    for (int i = 0; i < citiesCount; ++i) {
+        free(adjMatrix[i]);
+    }
+    free(adjMatrix);
+    for (int i = 0; i < statesCount; ++i) {
+        State* state = states + i;;
+        free(state->cities);
+    }
+    free(states);
+    free(roads);
 }
 
 int main(void) {
+    if (!runTests()) {
+        puts("Test failed");
+        return 1;
+    }
+    puts("Tests passed");
     FILE* file = fopen("input.txt", "r");
 
-    /*
-    int currentStateNumber = 0;
-    int freeCitiesCount = n - k;
-
-    while (freeCitiesCount > 0) {
-        State* currentState = states + currentStateNumber;
-        addCityToState(currentState, adjMatrix, employmentOfCities, n);
-        freeCitiesCount--;
-        currentStateNumber = (currentStateNumber + 1) % k;
-    }
-
-    printStates(states, k);
-    */
-
+    states(file);
+    fclose(file);
     return 0;
 }
