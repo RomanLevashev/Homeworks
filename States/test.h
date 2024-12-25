@@ -1,5 +1,5 @@
 #pragma once
 #include <stdbool.h>
 
-// Запускает тесты
+// Р—Р°РїСѓСЃРєР°РµС‚ С‚РµСЃС‚С‹
 bool runTests(void);
