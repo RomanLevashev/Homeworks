@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <math.h>
-
-bool test(void);
+#include "test.h"
 
 void invert(char array[], int length) {
 	for (int i = 0; i < length; ++i) {
@@ -72,12 +71,27 @@ void printArray(char array[], int length) {
 	printf("\n");
 }
 
-int decimalSumByBinaries(int firstNumber, int secondNumber) {
+int decimalSumByBinaries(int firstNumber, int secondNumber, bool isDebug) {
 	int size = sizeof(int) * 8;
 	int sign = 1;
 	char* firstBinary = calloc(size, 1);
+	if (firstBinary == NULL) {
+		perror("ÐžÑˆÐ¸Ð±ÐºÐ° Ð²Ñ‹Ð´ÐµÐ»ÐµÐ½Ð¸Ñ Ð¿Ð°Ð¼ÑÑ‚Ð¸");
+		return 0;
+	}
 	char* secondBinary = calloc(size, 1);
+	if (secondBinary == NULL) {
+		perror("ÐžÑˆÐ¸Ð±ÐºÐ° Ð²Ñ‹Ð´ÐµÐ»ÐµÐ½Ð¸Ñ Ð¿Ð°Ð¼ÑÑ‚Ð¸");
+		free(firstBinary);
+		return 0;
+	}
 	char* sumBinary = calloc(size, 1);
+	if (sumBinary == NULL) {
+		perror("ÐžÑˆÐ¸Ð±ÐºÐ° Ð²Ñ‹Ð´ÐµÐ»ÐµÐ½Ð¸Ñ Ð¿Ð°Ð¼ÑÑ‚Ð¸");
+		free(firstBinary);
+		free(secondBinary);
+		return 0;
+	}
 
 	binaryInterpritation(firstNumber, firstBinary, size);
 	binaryInterpritation(secondNumber, secondBinary, size);
@@ -88,7 +102,17 @@ int decimalSumByBinaries(int firstNumber, int secondNumber) {
 		sign = -1;
 	}
 
-	return sign * binaryToDecimal(sumBinary, size);
+	if (!isDebug) {
+		printArray(firstBinary, size);
+		printArray(secondBinary, size);
+		printArray(sumBinary, size);
+	}
+	int decimal = sign * binaryToDecimal(sumBinary, size);
+	free(firstBinary);
+	free(secondBinary);
+	free(sumBinary);
+
+	return decimal;;
 }
 
 int main(void) {
@@ -96,24 +120,22 @@ int main(void) {
 	int firstNumber = 0;
 	int secondNumber = 0;
 	int inputCount = 0;
-	if (test()) {
-		puts("Âñå òåñòû ïðîøëè óñïåøíî.");
-	}
-	else {
-		puts("Òåñòû ïðîâàëèëèñü");
+	if (!runTests()) {
+		puts("Ð¢ÐµÑÑ‚Ñ‹ Ð¿Ñ€Ð¾Ð²Ð°Ð»Ð¸Ð»Ð¸ÑÑŒ");
 		return 1;
 	}
+	puts("Ð’ÑÐµ Ñ‚ÐµÑÑ‚Ñ‹ Ð¿Ñ€Ð¾ÑˆÐ»Ð¸ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾");
 
 	do {
-		printf("Ââåäèòå äâà ÷èñëà ÷åðåç ïðîáåë: ");
+		printf("Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð´Ð²Ð° Ñ‡Ð¸ÑÐ»Ð° Ñ‡ÐµÑ€ÐµÐ· Ð¿Ñ€Ð¾Ð±ÐµÐ»: ");
 		inputCount = scanf("%d %d", &firstNumber, &secondNumber);
 
 		if (inputCount != 2) {
-			puts("Íåïðàâèëüíûé ââîä. Ïîæàëóéñòà, ïîâòîðèòå.");
+			puts("ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´. ÐŸÐ¾Ð¶Ð°Ð»ÑƒÐ¹ÑÑ‚Ð°, Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€Ð¸Ñ‚Ðµ.");
 			while (getchar() != '\n');
 		}
 	} while (inputCount != 2);
 
-	printf("Ñóììà = %d", decimalSumByBinaries(firstNumber, secondNumber));
+	printf("Ð¡ÑƒÐ¼Ð¼Ð° = %d", decimalSumByBinaries(firstNumber, secondNumber, false));
 	return 0;
 }
