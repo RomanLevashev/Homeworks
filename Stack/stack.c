@@ -17,6 +17,10 @@ void push(StackObject** top, char data) {
     *top = pointer;
 }
 
+char getStackTopValue(StackObject* top) {
+    return top->data;
+}
+
 char pop(StackObject** top) {
     if (*top == NULL) {
         return *top;
