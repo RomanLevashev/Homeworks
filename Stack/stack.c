@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "stack.h"
 
+typedef struct StackObj {                  
+    char data;
+    struct stackObj* next;
+} StackObject;
+
 void push(StackObject** top, char data) {
     StackObject* pointer = malloc(sizeof(StackObject));
     if (pointer == NULL) {
@@ -23,10 +28,12 @@ char pop(StackObject** top) {
     return data;
 }
 
-void freeStack(StackObject* top) {
-    while (top != NULL) {
-        StackObject* temp = top;
-        top = top->next;
+void freeStack(StackObject** root) {
+    StackObject* current = *root;
+    while (current != NULL) {
+        StackObject* temp = current;
+        current = current->next;;
         free(temp);
     }
+    *root = NULL;
 }
