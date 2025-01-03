@@ -25,7 +25,7 @@ bool isBalanced(char* string, int length) {
         }
     }
     if (top != NULL) {
-        freeStack(top);
+        freeStack(&top);
         return false;
     }
     return true;
@@ -52,6 +52,7 @@ bool runTests(void) {
     if (!isBalanced("(())([{}{}])", length)) {
         return false;
     }
+    return true;
 }
 
 int main(void) {
@@ -59,9 +60,8 @@ int main(void) {
         puts("Tests failed");
         return 1;
     }
-    else {
-        puts("All tests were passed successfully");
-    }
+    puts("All tests were passed successfully");
+    
     const int length = 100;
     char string[100] = { 0 };
     puts("Enter a string up to 100 symbols");
