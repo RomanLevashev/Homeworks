@@ -11,3 +11,6 @@ char pop(StackObject** top);
 
 // Освобождает память, выделенную под все элементы стэка
 void freeStack(StackObject* top);           
+
+// Возвращает значение, лежащее в вершине стэка
+char getStackTopValue(StackObject* top);
