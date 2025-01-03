@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-bool runTests(void) {
+bool runTestsForStack(void) {
     StackObject* top = NULL;
     push(&top, 'a');
     push(&top, 'b');
@@ -27,11 +27,9 @@ bool runTests(void) {
     push(&top, 'b');
     push(&top, 'c');
     push(&top, 'd');
-    freeStack(top);
-    top = NULL;
+    freeStack(&top);
+    if (top != NULL) {
+        return false;
+    }
     return true;
-}
-
-int main(void) {
-    runTests();
 }
