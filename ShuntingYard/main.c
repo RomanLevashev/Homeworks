@@ -3,13 +3,14 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 int getPriority(char operand) {
     if (operand == '+' || operand == '-') {
-        return 2;
-    }
-    if (operand == '+' || operand == '/') {
         return 1;
+    }
+    if (operand == '*' || operand == '/') {
+        return 2;
     }
     return 0;
 }
@@ -43,6 +44,7 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
                 int topStackPriority = getPriority(top->data);
 
                 while (currentPriority <= topStackPriority && top != NULL && top->data != '(') {
+                    topStackPriority = getPriority(top->data);
                     addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
                 }
             }
@@ -71,14 +73,17 @@ bool runTests(void) {
     char expectedResult[100] = "3 4 + 2 1 5 + - * ";
 
     postfixConverter(expression, length, result);
+    if (strncmp(result, expectedResult, 100) != 0) {
+        return false;
+    }
 
-    for (int i = 0; i < length; ++ i) {
-        if (result[i] == 0) {
-            break;
-        }
-        if (result[i] != expectedResult[i]) {
-            return false;
-        }
+    char secondExpression[100] = "2 - 2 * 3";
+    char secondResult[100] = { 0 };
+    char secondExpectedResult[100] = "2 2 3 * - ";
+    postfixConverter(secondExpression, length, secondResult);
+
+    if (strncmp(secondResult, secondExpectedResult, 100) != 0) {
+        return false;
     }
     return true;
 }
@@ -97,10 +102,8 @@ int main(void) {
         puts("Tests failed");
         return 1;
     }
-    else {
-        puts("All tests were passed successfully");
-    }
 
+    puts("All tests were passed successfully");
     const int length = 100;
     char expression[100] = { 0 };
     char resultExpression[200] = { 0 };
