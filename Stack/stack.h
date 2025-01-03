@@ -1,10 +1,16 @@
 #pragma once
 
-typedef struct StackObj {                   // Отдельный элемент стека, содержит символ и указатель на следующий элемент
-    char data;
-    struct stackObj* next;
-} StackObject;
+// РћС‚РґРµР»СЊРЅС‹Р№ СЌР»РµРјРµРЅС‚ СЃС‚СЌРєР°
+typedef struct StackObj StackObject;
 
-void push(StackObject** top, char data);    // Добавляет новый элемент на вершину стэка
-char pop(StackObject** top);                // Берет элемент с вершины стэка и удаляет его
-void freeStack(StackObject* top);           // Освобождает память, выделенную под все элементы стэка
+// Р”РѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ РЅР° РІРµСЂС€РёРЅСѓ СЃС‚СЌРєР°
+void push(StackObject** top, char data);
+
+// Р‘РµСЂРµС‚ СЌР»РµРјРµРЅС‚ СЃ РІРµСЂС€РёРЅС‹ СЃС‚СЌРєР° Рё СѓРґР°Р»СЏРµС‚ РµРіРѕ
+char pop(StackObject** top);                
+
+// РћСЃРІРѕР±РѕР¶РґР°РµС‚ РїР°РјСЏС‚СЊ, РІС‹РґРµР»РµРЅРЅСѓСЋ РїРѕРґ РІСЃРµ СЌР»РµРјРµРЅС‚С‹ СЃС‚СЌРєР°
+void freeStack(StackObject* top);           
+
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ, Р»РµР¶Р°С‰РµРµ РІ РІРµСЂС€РёРЅРµ СЃС‚СЌРєР°
+char getStackTopValue(StackObject* top);
