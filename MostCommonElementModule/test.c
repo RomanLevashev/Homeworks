@@ -1,6 +1,7 @@
 #include <stdbool.h>
-
-int mostCommonElement(int*, int);
+#include <stdio.h>
+#include "test.h"
+#include "mostCommonElement.h"
 
 bool testing(void) {
 	int firstArray[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };

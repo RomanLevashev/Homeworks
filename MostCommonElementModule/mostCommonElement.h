@@ -1,5 +1,4 @@
 #pragma once
 
-void swap(int*, int*);
-int quickSort(int*, int);
+// Возвращает наиболее часто встречающийся элемент
 int mostCommonElement(int*, int);
