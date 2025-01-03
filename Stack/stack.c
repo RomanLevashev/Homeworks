@@ -4,7 +4,7 @@
 
 typedef struct StackObj {                  
     char data;
-    struct stackObj* next;
+    struct StackObj* next;
 } StackObject;
 
 void push(StackObject** top, char data) {
