@@ -41,10 +41,10 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
         if (current == '+' || current == '/' || current == '*' || current == '-') {
             if (top != NULL) {
                 int currentPriority = getPriority(current);
-                int topStackPriority = getPriority(top->data);
+                int topStackPriority = getPriority(getStackTopValue(top));
 
-                while (currentPriority <= topStackPriority && top != NULL && top->data != '(') {
-                    topStackPriority = getPriority(top->data);
+                while (currentPriority <= topStackPriority && top != NULL && getStackTopValue(top) != '(') {
+                    topStackPriority = getPriority(getStackTopValue(top));
                     addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
                 }
             }
@@ -52,10 +52,10 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
         }
 
         if (current == ')') {
-            while (top != NULL && top->data != '(') {
+            while (top != NULL && getStackTopValue(top) != '(') {
                 addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
             }
-            if (top != NULL && top->data == '(') {
+            if (top != NULL && getStackTopValue(top) == '(') {
                 pop(&top);
             }
         }
