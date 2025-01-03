@@ -3,145 +3,112 @@
 #include <stdbool.h>
 #include <string.h>
 #include <locale.h>
-#include <ctype.h>
+#include "test.h"
+#include "telephonebook.h"
 
-enum options {quit, add, print, findPhoneByName, findNameByPhone, save};
-
-bool test(void);
+enum Options {quit, add, print, findPhoneByName, findNameByPhone, save};
 
 void clearBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF); // Читаем до конца строки или конца файла
+    char c = '\0';
+    while ((c = getchar()) != '\n' && c != EOF); 
 }
 
-void chooseOption(int choice, FILE* file) {
+void chooseOption(int choice, int maxLength, FILE** file) {
     switch (choice) {
     case add: {
-        puts("Введите имя: ");
-        char name[100] = { 0 };
-        fgets(name, 99, stdin);
+        printf("Введите имя до %d символов: ", maxLength-1);
+        char* name = calloc(maxLength, 1);
+        if (name == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
+        }
+        fgets(name, maxLength, stdin);
         name[strcspn(name, "\n")] = '\0';
 
-        puts("Введите телефон: ");
-        char phone[100] = { 0 };
-        fgets(phone, 99, stdin);
+        printf("Введите телефон до %d символов: ", maxLength-1);
+        char* phone = calloc(maxLength, 1);
+        if (phone == NULL) {
+            perror("Ошибка выделения памяти");
+            free(name);
+            return;
+        }
+        fgets(phone, maxLength, stdin);
         phone[strcspn(phone, "\n")] = '\0';
-        fprintf(file, "%s %s\n", name, phone);
+        fprintf(*file, "%s %s\n", name, phone);
         puts("Запись добавлена");
-        break;
+        free(name);
+        free(phone);
+        return;
     }
     case print: {
-        fseek(file, 0, SEEK_SET);
-        char line[256] = { 0 };
-
-        while (fgets(line, sizeof(line) - 1, file) != NULL) {
-            printf("%s", line);
+        fseek(*file, 0, SEEK_SET);
+        char* buffer = calloc(maxLength*2+3, 1);
+        if (buffer == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
         }
-        break;
+
+        while (fgets(buffer, maxLength*2+3, *file) != NULL) {
+            printf("%s", buffer);
+        }
+        free(buffer);
+        return;
     }
     case findPhoneByName: {
-        char* pointer = NULL;
-        char line[256] = { 0 };
-        int count = 0;
-        char* fgetsResult = NULL;
-        char name[100] = { 0 };
-        puts("Введите имя: ");
-        fgets(name, 99, stdin);
-        fseek(file, 0, SEEK_SET);
-        name[strcspn(name, "\n")] = '\0';
-
-        do {
-            fgetsResult = fgets(line, sizeof(line) - 1, file);
-            line[strcspn(line, "\n")] = '\0';
-            pointer = strstr(line, name);
-            if (pointer == NULL) {
-                memset(line, 0, 256);
-            }
-            else {
-                int i = 0;
-                while (!isdigit(pointer[i]) && pointer[i] != 0) {
-                    i++;
-                }
-                while (pointer[i] != 0) {
-                    putc(pointer[i++], stdout);
-                    count++;
-                }
-                printf("\n");
-                pointer = NULL;
-                memset(line, 0, 256);
-            }
-        } while (pointer == NULL && fgetsResult != NULL);
-
-        if (count < 1) {
-            puts("Данного человека нет в базе");
+        char* name = calloc(maxLength, 1);
+        printf("Введите имя до %d символов: ", maxLength - 1);
+        fgets(name, maxLength, stdin);
+        char* phone = findPhone(name, maxLength, *file);
+        if (phone != NULL && phone[0] != '\0') {
+            printf("%s\n", phone);
+            free(name);
+            free(phone);
         }
-        break;
-
+        else {
+            puts("Телефон не найден");
+        }
+        return;
     }
+
     case findNameByPhone: {
-        char* pointer = NULL;
-        char line[256] = { 0 };
-        int count = 0;
-        char* fgetsResult = NULL;
-        char phone[100] = { 0 };
-        puts("Введите телефон: ");
-        fgets(phone, 99, stdin);
-        fseek(file, 0, SEEK_SET);
-        phone[strcspn(phone, "\n")] = '\0';
-
-        do {
-            fgetsResult = fgets(line, sizeof(line) - 1, file);
-            line[strcspn(line, "\n")] = '\0';
-            pointer = strstr(line, phone);
-            if (pointer == NULL) {
-                memset(line, 0, 256);
-            }
-            else {
-                int i = 0;
-                while (!isdigit(line[i]) && line[i] != 0) {
-                    putc(line[i++], stdout);
-                    count++;
-                }
-                printf("\n");
-                pointer = NULL;
-                memset(line, 0, 256);
-            }
-        } while (pointer == NULL && fgetsResult != NULL);
-
-        if (count < 1) {
-            puts("Данного человека нет в базе");
+        char* phone = calloc(maxLength, 1);
+        printf("Введите телефон до %d символов: ", maxLength - 1);
+        fgets(phone, maxLength, stdin);
+        char* name = findName(phone, maxLength, *file);
+        if (name != NULL && name[0] != '\0') {
+            printf("%s\n", name);
+            free(name);
+            free(phone);
         }
-        break;
+        else {
+            puts("Имя не найдено");
+        }
+        return;
     }
     case save:
-        fclose(file);
-        file = fopen("TelephoneBook.txt", "a+");
+        fclose(*file);
+        *file = fopen("TelephoneBook.txt", "a+");
         puts("Сохранение выполнено");
-        break;
-
+        return;
     case quit:
-        fclose(file);
-        return 0;
-
+        return;
     default:
         puts("Неправильный ввод. Повторите снова.");
     }
 }
 
 int main(void) {
+    int maxLength = 150;
     setlocale(LC_ALL, "Russian");
-    if (test()) {
-        freopen("CON", "w", stdout);
-        puts("Тесты прошли успешно");
-    }
-    else {
+    if (!runTests()) {
         puts("Тесты провалились");
         return 1;
     }
-    int choice = 9;
+    puts("Тесты прошли успешно");
+    int choice = -1;
     FILE* file = fopen("TelephoneBook.txt", "a+");
 
-    while (true) {
+    while (choice != quit) {
         puts("0 - Выйти\n\
 1 - Добавить запись(имя и телефон)\n\
 2 - Распечатать все имеющиеся записи\n\
@@ -151,6 +118,8 @@ int main(void) {
         scanf("%d", &choice);
         clearBuffer();
 
-        chooseOption(choice, file);
+        chooseOption(choice, maxLength, &file);
     }
+    fclose(file);
+    return 0;
 }
