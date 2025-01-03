@@ -50,7 +50,7 @@ int postfixCalculator(char* expression, int length) {
     if (top != NULL && returnResult == NULL) {
         returnResult = pop(&top);
     }
-    freeStack(top);
+    freeStack(&top);
     return returnResult;
 }
 
