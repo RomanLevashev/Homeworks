@@ -1,4 +1,4 @@
 #pragma once
 
-// Сортирует массив длины length
+// РЎРѕСЂС‚РёСЂСѓРµС‚ РјР°СЃСЃРёРІ РґР»РёРЅС‹ length
 void quickSort(int* array, int length);

@@ -2,11 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mostCommonElement.h"
-
-bool testing(void);
+#include "test.h"
 
 int main(void) {
-	if (testing()) {
+	if (runTests()) {
 		puts("All test passed successfully");
 	}
 	else {

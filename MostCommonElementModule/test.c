@@ -3,7 +3,7 @@
 #include "test.h"
 #include "mostCommonElement.h"
 
-bool testing(void) {
+bool runTests(void) {
 	int firstArray[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };
 	if (mostCommonElement(firstArray, 20) != 5) {
 		puts("Test 1 failed.");
