@@ -3,10 +3,9 @@
 #include <stdio.h>
 #include <locale.h>
 #include <stdbool.h>
+#include "test.h"
 
-bool testing(void);
-
-enum options {add = 1,delete , print};
+enum Options {add = 1,delete, print};
 
 void clearBuffer() {
     int c;
@@ -38,26 +37,25 @@ void chooseOption(int choice, List* list) {
 }
 
 int main(void) {
-   setlocale(LC_ALL, "Russian");
-   if (!testing()) {
-        puts("Тесты не пройдены");
-        return 1;
+    setlocale(LC_ALL, "Russian");
+    if (!runTests()) {
+         puts("Тесты не пройдены");
+         return 1;
     }
-   else {
-       puts("Тесты пройдены");
-   }
+    puts("Тесты пройдены");
+
     List* list = createList();
     int choice = -1;
     do {
-        puts("0 – выйти\n\
+       puts("0 – выйти\n\
 1 – добавить значение в сортированный список\n\
 2 – удалить значение из списка\n\
 3 – распечатать список\n");
-        scanf("%d", &choice);
-        clearBuffer();
-        chooseOption(choice, list);
-    } while (choice != 0);
-
+         scanf("%d", &choice);
+         clearBuffer();
+         chooseOption(choice, list);
+    }  while (choice != 0);
+    freeList(&list);
     /*
     append(12, list);
     deleteElement(12, list);
@@ -73,6 +71,6 @@ int main(void) {
 
     printList(list);
 
-    return 0;
     */
+    return 0;
 }

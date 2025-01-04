@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct Node {
+    int value;
+    struct Node* previous;
+    struct Node* next;
+} Node;
+
+typedef struct doubleLinkedList {
+    struct Node* head;
+    struct Node* tail;
+} List;
+
 List* createList() {
     List* list = malloc(sizeof(List));
     list->head = NULL;
@@ -79,12 +90,15 @@ void sort(List* list) {
 }
 
 void append(int value, List* list) {
-
     Node** tail = &list->tail;
     Node** head = &list->head;
     
     if (*head == NULL) {
         *head = malloc(sizeof(Node));
+        if (*head == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
+        }
         (*head)->value = value;
         (*head)->previous = NULL;
         (*head)->next = NULL;
@@ -93,6 +107,10 @@ void append(int value, List* list) {
     }
     if (*tail == *head) {
         *tail = malloc(sizeof(Node));
+        if (*tail == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
+        }
         (*tail)->value = value;
         (*head)->next = *tail;
         (*tail)->previous = *head;
@@ -102,10 +120,38 @@ void append(int value, List* list) {
     }
     
     Node* newElement = malloc(sizeof(Node));
+    if (newElement == NULL) {
+        perror("Ошибка выделения памяти");
+        return;
+    }
     newElement->value = value;
     newElement->previous = *tail;
     newElement->next = NULL;
     (*tail)->next = newElement;
     *tail = newElement;
     sort(list);
+}
+
+Node** getPointerToPointerToHead(List* list) {
+    return &(list->head);
+}
+
+Node** getPointerToPointerToTail(List* list) {
+    return &(list->tail);
+}
+
+int getValueFromNode(Node* node) {
+    return node->value;
+}
+
+void freeList(List** list) {
+    Node* current = (*list)->head;
+
+    while (current != NULL) {
+        Node* temp = current->next;
+        free(current);
+        current = temp;
+    }
+    free(*list);
+    *list = NULL;
 }

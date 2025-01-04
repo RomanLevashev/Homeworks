@@ -1,18 +1,31 @@
 #pragma once
 
-typedef struct Node {
-    int value;
-    struct Node* previous;
-    struct Node* next;
-} Node;
+// Узел списка, нужен для отладки
+typedef struct Node Node;
 
-typedef struct doubleLinkedList {
-    struct Node* head;
-    struct Node* tail;
-} List;
+// Список
+typedef struct doubleLinkedList List;
 
-List* createList();
+// Возвращает указатель на указатель на голову, нужен для отладки
+Node** getPointerToPointerToHead(List* list);
+
+// Возвращает указатель на указатель на хвост, нужен для отладки
+Node** getPointerToPointerToTail(List* list);
+
+// Возвращает значение, хранящееся в узле, нужен для отладки
+int getValueFromNode(Node* node);
+
+// Сощдаёт список и возвращает указатель на него
+List* createList(void);
+
+// Добавляет элемент в список
 void append(int value, List* list);
+
+// Распечатывает список
 void printList(List* list);
-void sort(List* list);
+
+// Удаляет элемент из списка
 void deleteElement(int searchingValue, List* list);
+
+// Освобождает память, выделенную под список
+void freeList(List** list);

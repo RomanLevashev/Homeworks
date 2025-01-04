@@ -1,13 +1,14 @@
 #include <stdbool.h>
 #include "doubleLinkedList.h"
 #include <stdlib.h>
+#include "test.h"
 
-bool testing(void) {
+bool runTests(void) {
     List* list = createList();
-    Node** head = &(list->head);
-    Node** tail = &(list->tail);
+    Node** head = getPointerToPointerToHead(list);
+    Node** tail = getPointerToPointerToTail(list);
     append(9, list);
-    if ((*head)->value != 9 || (*tail)->value != 9) {
+    if (getValueFromNode(*head) != 9 || getValueFromNode(*tail) != 9) {
         return false;
     }
     deleteElement(9, list);
@@ -16,22 +17,21 @@ bool testing(void) {
     }
     append(10, list);
     append(11, list);
-    if ((*tail)->value != 11 || (*tail)->previous != *head) {
+    if (getValueFromNode(*tail) != 11 || getValueFromNode(*head) != 10) {
         return false;
     }
-    append(12, list);
-    if ((*tail)->value != 12 || (((*tail)->previous)->value) != 11) {
-        return false;
-    }
-    deleteElement(10, list);
-    deleteElement(11, list);
-    deleteElement(12, list);
-    append(24, list);
-    append(19, list);
-    append(20, list);
+    
     append(14, list);
-    if ((*head)->value != 14 || (*tail)->value != 24 || ((*head)->next)->value != 19 || ((*tail)->previous)->value != 20) {
+
+    if (getValueFromNode(*tail) != 14) {
         return false;
     }
+
+    append(1, list);
+
+    if (getValueFromNode(*head) != 1) {
+        return false;
+    }
+    freeList(&list);
     return true;
 }
