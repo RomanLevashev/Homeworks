@@ -6,8 +6,22 @@
 int maxNameLen = 50;
 int maxPhoneLen = 15;
 
+typedef struct Node {
+    char name[51];
+    char phone[16];
+    struct Node* next;
+} Node;
+
+typedef struct List {
+    Node* head;
+} List;
+
 List* createList(void) {
     List* list = malloc(sizeof(List));
+    if (list == NULL) {
+        perror("Memory allocate error");
+        return NULL;
+    }
     list->head = NULL;
 }
 
@@ -43,15 +57,16 @@ int compare(char* first, char* second, const int length, int kind) {
     return 0;
 }
 
-void deleteList(List* list) {
-    Node* current = list->head;
+void deleteList(List** list) {
+    Node* current = (*list)->head;
     
     while (current != NULL) {
         Node* next = current->next;
         free(current);
         current = next;
     }
-    free(list);
+    free(*list);
+    *list = NULL;
 }
 
 void split(Node* source, Node** firstHalf, Node** secondHalf) {
@@ -128,8 +143,9 @@ void append(List* list, char* name, char* phone) {
 
     if (*head == NULL) {
         *head = malloc(sizeof(Node));
+
         if (*head == NULL) {
-            puts("Can't append element, try again.");
+            perror("Memory allocate error");
             return;
         }
         (*head)->next = NULL;
@@ -157,19 +173,36 @@ void printList(List* list) {
     }
 }
 
-Node* mergeSort(Node* source, int kind) {
+Node** getHeadPointer(List* list) {
+    return &(list->head);
+}
+
+void mergeSort(Node** head, int kind) {
+    Node* source = *head;
     if (source == NULL || source->next == NULL) {
-        return source;
+        return;
     }
     Node* firstHalf = NULL;
     Node* secondHalf = NULL;
 
     split(source, &firstHalf, &secondHalf);
 
-    firstHalf = mergeSort(firstHalf, kind);
-    secondHalf = mergeSort(secondHalf, kind);
+    mergeSort(&firstHalf, kind);
+    mergeSort(&secondHalf, kind);
 
-    return merge(firstHalf, secondHalf, kind);
+    *head = merge(firstHalf, secondHalf, kind);
+}
+
+char* getName(Node* node) {
+    return node->name;
+}
+
+char* getPhone(Node* node) {
+    return node->phone;
+}
+
+Node* getNext(Node* node) {
+    return node->next;
 }
 
 void readFileToList(FILE* file, List* list) {

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-bool test() {
+bool runTests() {
     FILE* file = fopen("test.txt", "r");
     FILE* fileWithSortedNames = fopen("testNames.txt", "r");
     FILE* fileWithSortedPhones = fopen("testPhones.txt", "r");
@@ -16,48 +16,47 @@ bool test() {
     readFileToList(file, listForPhones);
     readFileToList(fileWithSortedNames, listWithSortedNames);
     readFileToList(fileWithSortedPhones, listWithSortedPhones);
-    listForNames->head = mergeSort(listForNames->head, 1);
-    listForPhones->head = mergeSort(listForPhones->head, 2);
-    Node* currentNames = listForNames->head;
-    Node* currentWantedNames = listWithSortedNames->head;
+    mergeSort(getHeadPointer(listForNames), 1);
+    mergeSort(getHeadPointer(listForPhones), 2);
+    Node* currentNames = *getHeadPointer(listForNames);
+    Node* currentWantedNames = *getHeadPointer(listWithSortedNames);
 
     while (currentNames != NULL && currentWantedNames != NULL) {
-        if (compare(currentNames->name,currentWantedNames->name, 50, 1) != 0) {
+        if (compare(getName(currentNames), getName(currentWantedNames), 50, 1) != 0) {
             puts("Name sort failed");
             return false;
         }
-        currentNames = currentNames->next;
-        currentWantedNames = currentWantedNames->next;
+        currentNames = getNext(currentNames);
+        currentWantedNames = getNext(currentWantedNames);
     }
     if (currentNames == NULL && currentWantedNames != NULL || currentWantedNames == NULL && currentNames != NULL) {
         puts("Name sort failed");
         return false;
     }
 
-    Node* currentPhones = listForPhones->head;
-    Node* currentWantedPhones = listWithSortedPhones->head;
+    Node* currentPhones = *getHeadPointer(listForPhones);
+    Node* currentWantedPhones = *getHeadPointer(listWithSortedPhones);
 
     while (currentPhones != NULL && currentWantedPhones != NULL) {
-        if (compare(currentPhones->phone, currentWantedPhones->phone, 15, 2) != 0) {
+        if (compare(getPhone(currentPhones), getPhone(currentWantedPhones), 15, 2) != 0) {
             puts("Phone sort failed");
             return false;
         }
-        currentPhones = currentPhones->next;
-        currentWantedPhones = currentWantedPhones->next;
+        currentPhones = getNext(currentPhones);
+        currentWantedPhones = getNext(currentWantedPhones);
     }
     if (currentPhones == NULL && currentWantedPhones != NULL || currentPhones == NULL && currentWantedPhones != NULL) {
         puts("Phone sort failed");
         return false;
     }
 
-    return true;
-
     fclose(file);
     fclose(fileWithSortedNames);
     fclose(fileWithSortedPhones);
-    deleteList(listForNames);
-    deleteList(listForPhones);
-    deleteList(listWithSortedNames);
-    deleteList(listWithSortedPhones);
-    
+    deleteList(&listForNames);
+    deleteList(&listForPhones);
+    deleteList(&listWithSortedNames);
+    deleteList(&listWithSortedPhones);
+
+    return true;
 }
