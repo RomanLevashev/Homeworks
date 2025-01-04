@@ -2,29 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-int josephusProblem(int n, int k) {
-    if (n <= 0 || k <= 0) {
-        puts("Invalid input");
-        return 0;
-    }
-    if (k == 1) {
-        return n;
-    }
-    Warrior* head = createÑircularList(n);
-    Warrior* current = head;
-
-    while (current->next != current) {
-        for (int i = 1; i < k - 1; ++i) {
-            current = current->next;
-        }
-        current = deleteNextWarrior(current);
-    }
-    int lastPosition = current->position;
-    free(current);
-    return lastPosition;
-}
-
-bool testing(void) {
+bool runTests(void) {
     if (josephusProblem(5, 2) != 3) {
         return false;
     }
@@ -53,7 +31,7 @@ int main(void) {
     int n = -1;
     int k = -1;
 
-    if (!testing()) {
+    if (!runTests()) {
         return 1;
     }
     else {
@@ -65,6 +43,9 @@ int main(void) {
     } while (n <= 0 && k <= 0);
 
     int result = josephusProblem(n, k);
+    if (result < 0) {
+        return 2;
+    }
     printf("Last warrior was with number %d\n", result);
     return 0;
 }
