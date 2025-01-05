@@ -3,15 +3,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void createFile(const char* filename, const char* expression) {
+void createFileWithTest(const char* filename, const char* expression) {
     FILE* file = fopen(filename, "w");
-
     fprintf(file, "%s\n", expression);
     fclose(file);
-
 }
 
-bool test() {
+bool runTests() {
     const char* tests[] = {
         "( + 3 5 )",  
         "( * 4 2 )",  
@@ -24,66 +22,22 @@ bool test() {
         "( / ( + 3 4 ) ( * 2 2 ) )",  
         "( * ( - 10 4 ) ( + 1 1 ) )"   
     };
+
+    int expectedResults[] = { 8, 8, 4, 6, 18, 2, 9, 3, 1, 12 };
     for (int i = 0; i < 10; i++) {
-        char filename[20];
+        char filename[20] = { 0 };
         snprintf(filename, sizeof(filename), "test%d.txt", i + 1);
-        createFile(filename, tests[i]);
+        createFileWithTest(filename, tests[i]);
         FILE* file = fopen(filename, "r");
-        Tree* tree = malloc(sizeof(Tree));
-        tree->root = buildTree(file);
-        int value = evaluateFromTree(tree->root);
-        switch (i + 1) {
-        case 1:
-            if (value != 8) {
-                return false;
-            }
-            break;
-        case 2:
-            if (value != 8) {
-                return false;
-            }
-            break;
-        case 3:
-            if (value != 4) {
-                return false;
-            }
-            break;
-        case 4:
-            if (value != 6) {
-                return false;
-            }
-            break;
-        case 5:
-            if (value != 18) {
-                return false;
-            }
-            break;
-        case 6:
-            if (value != 2) {
-                return false;
-            }
-            break;
-        case 7:
-            if (value != 9) {
-                return false;
-            }
-            break;
-        case 8:
-            if (value != 3) {
-                return false;
-            }
-            break;
-        case 9:
-            if (value != 1) {
-                return false;
-            }
-            break;
-        case 10:
-            if (value != 12) {
-                return false;
-            }
-            break;
+        Node* root = buildTree(file);
+        int value = evaluateFromTree(root);
+        if (value != expectedResults[i]) {
+            freeTree(root);
+            fclose(file);
+            return false;
         }
+        freeTree(root);
+        fclose(file);
     }
     return true;
 }

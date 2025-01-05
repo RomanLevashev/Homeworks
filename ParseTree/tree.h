@@ -1,19 +1,15 @@
 #pragma once
 #include <stdio.h>
 
-typedef struct Node {
-    union {
-        int value;
-        char operation;
-    };
-    struct Node* left;
-    struct Node* right;
-} Node;
+// Узел дерева
+typedef struct Node Node;
 
-typedef struct Tree {
-    Node* root;
-} Tree;
-
+// Строит дерево и возвращает указатель на его корень
  Node* buildTree(FILE* file);
+
+ // Вычисляет выражение с помощью дерева
  int evaluateFromTree(Node* node);
+
+ // Освобождает память, выделенную на дерево
  void freeTree(Node* node);
+

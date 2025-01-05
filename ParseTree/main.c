@@ -3,11 +3,10 @@
 #include <stdlib.h>
 #include "tree.h"
 #include <stdbool.h>
-
-bool test();
+#include "test.h"
 
 int main(void) {
-    if (!test()) {
+    if (!runTests()) {
         puts("Tests failed");
         return 1;
     }
@@ -15,10 +14,9 @@ int main(void) {
         puts("Tests passed");
     }
     FILE* file = fopen("input.txt", "r");
-    Tree* tree = malloc(sizeof(Tree));
-    tree->root = buildTree(file);
-    printf("Value of expression - %d\n", evaluateFromTree(tree->root));
-    freeTree(tree->root);
- 
+    Node* root = buildTree(file);
+    printf("Value of expression - %d\n", evaluateFromTree(root));
+    freeTree(root);
+    fclose(file);
     return 0;
 }

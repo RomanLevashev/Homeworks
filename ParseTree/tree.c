@@ -3,9 +3,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-Node* createNumberNode(int number, Node* left, Node* right) {
-    return;
-}
+typedef struct Node {
+    union {
+        int value;
+        char operation;
+    };
+    struct Node* left;
+    struct Node* right;
+} Node;
 
 Node* buildTree(FILE* file) {
     char current = 0;
@@ -40,6 +45,9 @@ Node* buildTree(FILE* file) {
 }
 
 void freeTree(Node* node) {
+    if (node == NULL) {
+        return;
+    }
     if (node->left != NULL) {
         freeTree(node->left);
     }
