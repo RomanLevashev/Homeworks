@@ -2,13 +2,43 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct Node { 
+    int key;
+    char* value;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+typedef struct Tree { 
+    Node* root;
+} Tree;
+
+Tree* getTree(void) {
+    Tree* tree = calloc(1, sizeof(Tree));
+    return tree;
+}
+
+Node** getRootPointer(Tree* tree) {
+    return &(tree->root);
+}
+
+int getKey(Node* node) {
+    return node->key;
+}
+
 Node* createNode(int key, char* value) {
     Node* newElement = malloc(sizeof(Node));
     if (newElement == NULL) {
+        perror("Ошибка выделения памяти");
         return NULL;
     }
     newElement->key = key;
-    newElement->value = value;
+    newElement->value = strdup(value);
+    if (newElement->value == NULL) {
+        perror("Ошибка выделения памяти");
+        free(newElement);
+        return NULL;
+    }
     newElement->left = NULL;
     newElement->right = NULL;
 
@@ -25,7 +55,7 @@ void insert(Node** source, int key, char* value) {
         int currentKey = current->key;
         if (currentKey == key) {
             free(current->value);
-            current->value = value;
+            current->value = strdup(value);
             return;
         }
         if (currentKey < key) {
@@ -137,10 +167,15 @@ void deleteNodeWithTwoChild(Node* deletedElement) {
         return;
     }
     free(deletedElement->value);
-    deletedElement->value = calloc(150, 1);
-    strncpy(deletedElement->value, minimumRightElement->value, 149);
+    deletedElement->value = strdup(minimumRightElement->value);
     deletedElement->key = minimumRightElement->key;
     deleteNodeWithOneChild(parentMinimumRightElement, minimumRightElement);
+}
+
+void freeNode(Node* node) {
+    free(node->value);
+    free(node);
+    return;
 }
 
 void delete(Node** source, int key) {
@@ -157,19 +192,16 @@ void delete(Node** source, int key) {
             }
             if (current->left != NULL && current->right == NULL) {
                 *source = current->left;
-                free(current->value);
-                free(current);
+                freeNode(current);
                 return;
             }
             if (current->right != NULL && current->left == NULL) {
                 *source = current->right;
-                free(current->value);
-                free(current);
+                freeNode(current);
                 return;
             }
             if (current->right == NULL && current->left == NULL) {
-                free(current->value);
-                free(current);
+                freeNode(current);
                 *source = NULL;
                 return;
             }
@@ -210,4 +242,20 @@ void delete(Node** source, int key) {
             deleteNodeWithOneChild(parentDeletedElement, deletedElement);
         }
     }
+}
+
+void freeTree(Tree** tree, Node** source) {
+    if (*source == NULL) {
+        return;
+    }
+    freeTree(tree, &((*source)->left));
+    freeTree(tree, &((*source)->right));
+    if (&((*tree)->root) == source) {
+        freeNode(*source);
+        free(*tree);
+        *tree = NULL;
+        return;
+    }
+    freeNode(*source);
+    *source == NULL;
 }

@@ -35,68 +35,59 @@ int compare(char* first, char* second, const int length, int kind) {
     return 0;
 }
 
-void insertForTest(Node** root, int key, const char* source) {
-    char* str = calloc(150, 1);
-    strncpy(str, source, 150);
-    insert(root, key, str);
-}
-
-bool test() {
-    Tree* tree = malloc(sizeof(Tree));
-    tree->root = NULL;
-    Node* root = tree->root;
-    insertForTest(&root, 123, "abc");
-    insertForTest(&root, 111, "def");
-    insertForTest(&root, 133, "gda");
-    if (compare(search(root, 123), "abc", 123, 1) != 0) {
+bool runTests() {
+    int testLength = 150;
+    Tree* tree = getTree();
+    Node** rootPointer = getRootPointer(tree);
+    insert(rootPointer, 123, "abc");
+    insert(rootPointer, 111, "def");
+    insert(rootPointer, 133, "gda");
+    if (compare(search(*rootPointer, 123), "abc", 123, 1) != 0) {
+        freeTree(&tree, rootPointer);
         return false;
     }
-    delete(&root, 123);
-    if (root->key != 133) {
+    delete(rootPointer, 123);
+    if (getKey(*rootPointer) != 133) {
+        freeTree(&tree, rootPointer);
         return false;
     }
-    delete(&root, 111);
-    delete(&root, 133);
-    insertForTest(&root, 20, "20");
-    insertForTest(&root, 24, "24");
-    insertForTest(&root, 23, "23");
-    insertForTest(&root, 27, "27");
-    delete(&root, 23);
-    if (search(root, 23) != NULL) {
+    delete(rootPointer, 111);
+    delete(rootPointer, 133);
+    insert(rootPointer, 20, "20");
+    insert(rootPointer, 24, "24");
+    insert(rootPointer, 23, "23");
+    insert(rootPointer, 27, "27");
+    delete(rootPointer, 23);
+    if (search(*rootPointer, 23) != NULL) {
+        freeTree(&tree, rootPointer);
         return false;
     }
 
-    insertForTest(&root, 5, "5");
-    insertForTest(&root, 16, "16");
-    insertForTest(&root, 2, "2");
-    insertForTest(&root, 11, "11");
-    insertForTest(&root, 13, "13");
-    insertForTest(&root, 18, "18");
-    delete(&root, 5);
-    if (search(root, 5) != NULL) {
+    insert(rootPointer, 5, "5");
+    insert(rootPointer, 16, "16");
+    insert(rootPointer, 2, "2");
+    insert(rootPointer, 11, "11");
+    insert(rootPointer, 13, "13");
+    insert(rootPointer, 18, "18");
+    delete(rootPointer, 5);
+    if (search(*rootPointer, 5) != NULL) {
+        freeTree(&tree, rootPointer);
         return false;
     }
-    if (search(root, 16) == NULL || search(root, 11) == NULL || search(root, 18) == NULL || search(root, 13) == NULL) {
+    if (search(*rootPointer, 16) == NULL || search(*rootPointer, 11) == NULL || search(*rootPointer, 18) == NULL || search(*rootPointer, 13) == NULL) {
+        freeTree(&tree, rootPointer);
         return false;
     }
-    if (compare(search(root, 18), "18", 3, 1) != 0) {
+    if (compare(search(*rootPointer, 18), "18", 3, 1) != 0) {
+        freeTree(&tree, rootPointer);
         return 0;
     }
-    delete(&root, 20);
-    if (root->key != 24) {
+    delete(rootPointer, 20);
+    if (getKey(*rootPointer) != 24) {
+        freeTree(&tree, rootPointer);
         return false;
     }
-    delete(&root, 16);
-    delete(&root, 2);
-    delete(&root, 11);
-    delete(&root, 13);
-    delete(&root, 18);
-    delete(&root, 20);
-    delete(&root, 24);
-    delete(&root, 27);
-    
-    if (root != NULL) {
-        return false;
-    }
+    freeTree(&tree, rootPointer);
+
     return true;
 }

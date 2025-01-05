@@ -1,19 +1,28 @@
 #pragma once
 
-typedef struct Node { // Узел
-    int key;
-    char* value;
-    struct Node* left;
-    struct Node* right;
-} Node;
+// Узел дерева
+typedef struct Node Node;
 
-typedef struct Tree { // Дерево
-    Node* root;
-} Tree;
+// Само дерево
+typedef struct Tree Tree;
 
-void insert(Node** source, int key, char* value); // Вставляет элемент в дерево, строки передавать только те, которые выделены на куче
-void deleteLeaf(Node* parentDeletedElement, Node* deletedElement); // Удаляет листовой элемент, вспомогательная функция для удаления
-void deleteNodeWithOneChild(Node* parentDeletedElement, Node* deletedElement); // Удаялет элемент с одним потомком, вспомогательная функция для удаления
-void deleteNodeWithTwoChild(Node* deletedElement); // Удаляет элемент с двумя потомками, вспомогательная функция для удаления
-void delete(Node** source, int key); // Удаляет элемент по ключу
-char* search(Node* source, int key); // Находит элемент в дереве
+// Вставляет элемент в дерево
+void insert(Node** source, int key, char* value); 
+
+// Удаляет элемент по ключу
+void delete(Node** source, int key); 
+
+// Находит элемент в дереве
+char* search(Node* source, int key);
+
+// Выделяет память под дерево и возвращает указатель на нее
+Tree* getTree(void);
+
+// Возвращает указатель на корень дерева
+Node** getRootPointer(Tree* tree);
+
+// Освобождает всю память, выделенную под дерево
+void freeTree(Tree** tree, Node** source);
+
+// Возвращает ключ, данного узла, нужна для отладки
+int getKey(Node* node);
