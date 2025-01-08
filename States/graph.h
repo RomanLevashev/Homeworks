@@ -1,26 +1,18 @@
 #pragma once
+
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct Road {
-    int start;
-    int end;
-    int length;
-} Road;
+typedef struct State State;
 
-typedef struct State {
-    int number;
-    int* cities;
-    int citiesCount;
-} State;
+// Создаёт государства по файлу и распечатывает их, если debug == true, то возвращает массив государств, в другом случае NULL
+State* createStates(FILE* file, bool debug);
 
-// Создаёт матрицу смежности по заданным дорогам
-int** createAdjMatrix(int n, int m, Road* roads);
-// Создаёт массив дорог по данным из файла
-Road* createRoads(FILE* file, int count);
-// Создает массив государств по данным из файла
-Road* createStates(FILE* file, int countStates, int maxCountOfCities, bool* employmentOfCities);
-// Устанавливает значение для каждого элемента массива на переданное
-void setValueTo(int* array, int length, int value);
-// Добавляет к государству ближайший город, если добавил - возвращает true, в ином случае false
-bool addCityToState(State* state, int** adjMatrix, bool* employmentOfCities, int citiesCount);
+// Возвращает указатель на массив городов государства, нужна для отладки
+int* getCities(State* state);
+
+// Возвращает указатель на государство с переданным номером, если оно существует и NULL в противном случае, нужна для отладки
+State* getStateWithNumber(State* states, int number);
+
+// Освобождает память, выделенную под государства
+void freeStates(State** states, int statesCount);
