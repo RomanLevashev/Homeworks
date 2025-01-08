@@ -1,47 +1,45 @@
 #include <stdbool.h>
 #include "tree.h"
+#include "test.h"
 #include <stdio.h>
 #include <locale.h>
 #include <stdlib.h>
 
-bool test(void);
-
-enum options { add = 1, get, check, del };
+enum Options { add = 1, get, check, del };
 
 void clearBuffer() {
-    char c;
+    char c = '\0';
     while ((c = getchar()) != '\n' && c != EOF && c != NULL);
 }
 
 void chooseOption(int choice, Node** root) {
     switch (choice) {
     case add: {
-        char* key = calloc(150, 1);
-        char* value = calloc(150, 1);
+        char key[151] = { 0 };
+        char value[151] = { 0 };
         puts("Введите ключ до 150 символов: ");
-        scanf("%s", key);
+        scanf("%150s", key);
         clearBuffer();
         puts("Введите значение до 150 символов: ");
-        scanf("%s", value);
+        scanf("%150s", value);
         clearBuffer();
         insert(root, key, value);
         break;
     }
     case get: {
-        char* key = calloc(150, 1);
-        char* value = NULL;
+        char key[151] = { 0 };
         puts("Введите ключ, по которому хотите найти значение: ");
-        scanf("%s", key);
+        scanf("%150s", key);
         clearBuffer();
+        char* value = NULL;
         value = search(*root, key);
         printf("%s\n", value);
-        free(key);
         break;
     }
     case check: {
-        char* key = calloc(150, 1);
+        char key[151] = { 0 };
         puts("Введите ключ, который хотите проверить на наличие: ");
-        scanf("%s", key);
+        scanf("%150s", key);
         clearBuffer();
         if (search(*root, key) == NULL) {
             puts("Ключ не в списке");
@@ -49,23 +47,21 @@ void chooseOption(int choice, Node** root) {
         else {
             puts("Ключ в списке");
         }
-        free(key);
         break;
     }
     case del: {
-        char* key = calloc(150, 1);
+        char key[151] = { 0 };
         puts("Введите ключ, который хотите удалить: ");
-        scanf("%s", key);
+        scanf("%150s", key);
         clearBuffer();
         delete(root, root, key);
-        free(key);
     }
     }
 }
 
 int main(void) {
     setlocale(LC_ALL, "Russian");
-    if (!test()) {
+    if (!runTests()) {
         puts("Тесты провалились");
         return 1;
     }
@@ -73,9 +69,7 @@ int main(void) {
         puts("Тесты прошли успешно");
     }
 
-    Tree* tree = malloc(sizeof(Tree));
-    tree->root = NULL;
-    Node* root = tree->root;
+    Node* root = NULL;
     int choice = -1;
 
     while (choice != 0) {

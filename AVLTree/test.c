@@ -2,92 +2,85 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void insertForTest(Node** root, char* key) {
-    char* str = calloc(150, 1);
-    char* keyStr = calloc(150, 1);
-    strncpy(str, key, 150);
-    strncpy(keyStr, key, 150);
-    insert(root, keyStr, str);
-}
-
-bool test(void) {
-    Tree* tree = malloc(sizeof(Tree));
-    tree->root = NULL;
-    Node* root = tree->root;
+bool runTests(void) {
+    Node* root = NULL;
     
-    insertForTest(&root, "20");
-    insertForTest(&root, "15");
-    insertForTest(&root, "25");
-    insertForTest(&root, "11");
-    insertForTest(&root, "17");
-    insertForTest(&root, "19");
+    insert(&root, "20", "20");
+    insert(&root, "15", "15");
+    insert(&root, "25", "25");
+    insert(&root, "11", "11");
+    insert(&root, "17", "17");
+    insert(&root, "19", "19");
     delete(&root, &root, "11");
     delete(&root, &root, "19");
-    if (!(compare(root->key, "17", 10) == 0 && compare((root->left)->key, "15", 10) == 0 && compare((root->right)->key, "20", 10) == 0)) { // Проверка лево-правого поворота
+    if (!(compare(getKey(root), "17", 10) == 0 && compare(getKey(getLeft(root)), "15", 10) == 0 && compare(getKey(getRight(root)), "20", 10) == 0)) { // Проверка лево-правого поворота
+        freeTree(&root);
         return false;   
     }
     freeTree(&root);
-    
-    insertForTest(&root, "25");
-    insertForTest(&root, "20");
-    insertForTest(&root, "30");
-    insertForTest(&root, "29");
-    insertForTest(&root, "31");
-    insertForTest(&root, "27");
-    if (!(compare(root->key, "29", 10) == 0 && compare((root->left)->key, "25", 10) == 0 && compare((root->right)->key, "30", 10) == 0)) { // Проверка право-левого поворота
+    insert(&root, "25", "25");
+    insert(&root, "20", "20");
+    insert(&root, "30", "30");
+    insert(&root, "29", "29");
+    insert(&root, "31", "31");
+    insert(&root, "27", "27");
+    if (!(compare(getKey(root), "29", 10) == 0 && compare(getKey(getLeft(root)), "25", 10) == 0 && compare(getKey(getRight(root)), "30", 10) == 0)) { // Проверка право-левого поворота
+        freeTree(&root);
         return false;
     }
     freeTree(&root);
     
-    insertForTest(&root, "20");
-    insertForTest(&root, "10");
-    insertForTest(&root, "30");
-    insertForTest(&root, "5");
-    insertForTest(&root, "15");
-    insertForTest(&root, "1");
-    if (!(compare(root->key, "10", 10) == 0 && compare((root->left)->key, "5", 10) == 0 && compare((root->right)->key, "20", 10) == 0)) { // Проверка правого поворота
+    insert(&root, "20", "20");
+    insert(&root, "10", "10");
+    insert(&root, "30", "30");
+    insert(&root, "5", "5");
+    insert(&root, "15", "15");
+    insert(&root, "1", "1");
+    if (!(compare(getKey(root), "10", 10) == 0 && compare(getKey(getLeft(root)), "5", 10) == 0 && compare(getKey(getRight(root)), "20", 10) == 0)) { // Проверка правого поворота
+        freeTree(&root);
         return false;
     }
     freeTree(&root);
 
-    insertForTest(&root, "20");
-    insertForTest(&root, "10");
-    insertForTest(&root, "25");
-    insertForTest(&root, "22");
-    insertForTest(&root, "28");
-    insertForTest(&root, "30");
-    if (!(compare(root->key, "25", 10) == 0 && compare((root->left)->key, "20", 10) == 0 && compare((root->right)->key, "28", 10) == 0)) { // Проверка левого поворота
+    insert(&root, "20", "20");
+    insert(&root, "10", "10");
+    insert(&root, "25", "25");
+    insert(&root, "22", "22");
+    insert(&root, "28", "28");
+    insert(&root, "30", "30");
+    if (!(compare(getKey(root), "25", 10) == 0 && compare(getKey(getLeft(root)), "20", 10) == 0 && compare(getKey(getRight(root)), "28", 10) == 0)) { // Проверка левого поворота
+        freeTree(&root);
         return false;
     }
     freeTree(&root);
 
-    insertForTest(&root, "50");
-    insertForTest(&root, "20");
-    insertForTest(&root, "70");
-    insertForTest(&root, "15");
-    insertForTest(&root, "30");
-    insertForTest(&root, "60");
-    insertForTest(&root, "75");
-    insertForTest(&root, "10");
-    insertForTest(&root, "25");
-    insertForTest(&root, "35");
-    insertForTest(&root, "55");
-    insertForTest(&root, "73");
-    insertForTest(&root, "76");
-    insertForTest(&root, "74");
-    insertForTest(&root, "11");
-    insertForTest(&root, "13");
-    insertForTest(&root, "27");
-    insertForTest(&root, "12");
-    insertForTest(&root, "9");
-    insertForTest(&root, "36");
-    insertForTest(&root, "16");
+    insert(&root, "50", "50");
+    insert(&root, "20", "20");
+    insert(&root, "70", "70");
+    insert(&root, "15", "15");
+    insert(&root, "30", "30");
+    insert(&root, "60", "60");
+    insert(&root, "75", "75");
+    insert(&root, "10", "10");
+    insert(&root, "25", "25");
+    insert(&root, "35", "35");
+    insert(&root, "55", "55");
+    insert(&root, "73", "73");
+    insert(&root, "76", "76");
+    insert(&root, "74", "74");
+    insert(&root, "11", "11");
+    insert(&root, "13", "13");
+    insert(&root, "27", "27");
+    insert(&root, "12", "12");
+    insert(&root, "9", "9");
+    insert(&root, "36", "36");
+    insert(&root, "16", "16");
     delete(&root, &root, "70");
-    if (!(compare(root->key, "20", 10) == 0 && compare((root->right)->key, "50", 10) == 0 && compare((root->left)->key, "11", 10) == 0)) { // Проверка удаления и правого поворота одновременно
+    if (!(compare(getKey(root), "20", 10) == 0 && compare(getKey(getRight(root)), "50", 10) == 0 && compare(getKey(getLeft(root)), "11", 10) == 0)) { // Проверка удаления и правого поворота одновременно
         return false;
     }
     delete(&root, &root, "20");
-    if (compare(root->key, "25", 1) != 0) { // Проверка удаления корня
+    if (compare(getKey(root), "25", 1) != 0) { // Проверка удаления корня
         return false;
     }
 
@@ -95,7 +88,5 @@ bool test(void) {
         return false;
     }
     freeTree(&root);
-    free(root);
-    free(tree);
     return true;
 }

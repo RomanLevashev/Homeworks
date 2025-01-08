@@ -2,12 +2,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
+typedef struct Node {
+    char* key;
+    char* value;
+    int height;
+    struct Node* left;
+    struct Node* right;
+} Node;
 
 bool isDigit(char* str) {
     int i = 0;
     char current = str[i];
     while (current != 0) {
-        if (current <= 57 && current >= 48) {
+        if (current <= '9' && current >= '0') {
             i += 1;
             current = str[i];
         }
@@ -57,20 +66,10 @@ int compare(char* first, char* second, const int length) {
         int secondElement = second[i];
 
         if (firstElement == 0) {
-            if ((secondElement != 0)) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
+            return secondElement == 0 ? 0 : 1;
         }
         if (secondElement == 0) {
-            if ((firstElement != 0)) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
+            return firstElement == 0 ? 0 : -1;
         }
 
         if (firstElement > secondElement) {
@@ -85,19 +84,6 @@ int compare(char* first, char* second, const int length) {
 
 int getHeight(Node* node) {
     return node ? node->height : 0;
-}
-
-int updateHeight(Node** nodePointer) {
-    Node* node = *nodePointer;
-    if (!node) return 0; 
-
-    int leftHeight = updateHeight(&(node->left));
-    int rightHeight = updateHeight(&(node->right));
-
-    node->height = 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
-    balanceTree(nodePointer);
-
-    return node->height;
 }
 
 int getBalanceFactor(Node* node) {
@@ -151,6 +137,27 @@ Node* balanceTree(Node** nodePointer) {
     return node;
 }
 
+int updateHeight(Node** nodePointer) {
+    Node* node = *nodePointer;
+    if (!node) return 0;
+
+    int leftHeight = updateHeight(&(node->left));
+    int rightHeight = updateHeight(&(node->right));
+
+    node->height = 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
+    balanceTree(nodePointer);
+
+    return node->height;
+}
+
+void deleteNode(Node** node) {
+    Node* deletedNode = *node;
+    free(deletedNode->value);
+    free(deletedNode->key);
+    free(deletedNode);
+    *node = NULL;
+}
+
 void deleteLeaf(Node* parentDeletedElement, Node* deletedElement) {
     if (parentDeletedElement->left == deletedElement) {
         parentDeletedElement->left = NULL;
@@ -158,9 +165,8 @@ void deleteLeaf(Node* parentDeletedElement, Node* deletedElement) {
     if (parentDeletedElement->right == deletedElement) {
         parentDeletedElement->right = NULL;
     }
-    free(deletedElement->value);
-    free(deletedElement->key);
-    free(deletedElement);
+    deleteNode(&deletedElement);
+
 }
 
 void deleteNodeWithOneChild(Node* parentDeletedElement, Node* deletedElement) {
@@ -180,9 +186,7 @@ void deleteNodeWithOneChild(Node* parentDeletedElement, Node* deletedElement) {
             parentDeletedElement->right = deletedElement->right;
         }
     }
-    free(deletedElement->value);
-    free(deletedElement->key);
-    free(deletedElement);
+    deleteNode(&deletedElement);
 }
 
 void deleteNodeWithTwoChild(Node* deletedElement) {
@@ -210,27 +214,44 @@ void deleteNodeWithTwoChild(Node* deletedElement) {
     if (minimumRightElement->left == NULL && minimumRightElement->right == NULL) {
         free(deletedElement->value);
         free(deletedElement->key);
-        deletedElement->value = calloc(150, 1);
-        deletedElement->key = calloc(150, 1);
-        strncpy(deletedElement->value, minimumRightElement->value, 149);
-        strncpy(deletedElement->key, minimumRightElement->key, 149);
+        
+        deletedElement->value = strdup(minimumRightElement->value);
+        if (deletedElement->value == NULL) {
+            perror("Memory allocate error");
+            return;
+        }
+
+        deletedElement->key = strdup(minimumRightElement->key);
+        if (deletedElement->key == NULL) {
+            free(deletedElement->value);
+            deletedElement->value = NULL;
+            perror("Memory allocate error");
+            return;
+        }
+
         if (parentMinimumRightElement->left == minimumRightElement) {
             parentMinimumRightElement->left = NULL;
         }
         if (parentMinimumRightElement->right == minimumRightElement) {
             parentMinimumRightElement->right = NULL;
         }
-        free(minimumRightElement->key);
-        free(minimumRightElement->value);
-        free(minimumRightElement);
+        deleteNode(&minimumRightElement);
         return;
     }
     free(deletedElement->value);
     free(deletedElement->key);
-    deletedElement->value = calloc(150, 1);
-    deletedElement->key = calloc(150, 1);
-    strncpy(deletedElement->value, minimumRightElement->value, 149);
-    strncpy(deletedElement->key, minimumRightElement->key, 149);
+    deletedElement->value = strdup(minimumRightElement->value);
+    if (deletedElement->value == NULL) {
+        perror("Memory allocate error");
+        return;
+    }
+    deletedElement->key = strdup(minimumRightElement->key);
+    if (deletedElement->key == NULL) {
+        free(deletedElement->key);
+        deletedElement->key == NULL;
+        perror("Memory allocate error");
+        return;
+    }
     deleteNodeWithOneChild(parentMinimumRightElement, minimumRightElement);
 }
 
@@ -304,8 +325,23 @@ Node* insert(Node** nodePointer, char* key, char* value) {
     Node* node = *nodePointer;
     if (node == NULL) {
         Node* newNode = malloc(sizeof(Node));
-        newNode->key = key;
-        newNode->value = value;
+        if (newNode == NULL) {
+            perror("Memory allocate error");
+            return NULL;
+        }
+        newNode->key = strdup(key);
+        if (newNode->key == NULL) {
+            perror("Memory allocate error");
+            free(newNode);
+            return NULL;
+        }
+        newNode->value = strdup(value);
+        if (newNode->value == NULL) {
+            perror("Memory allocate error");
+            free(newNode->key);
+            free(newNode);
+            return NULL;
+        }
         newNode->height = 1;
         newNode->left = NULL;
         newNode->right = NULL;
@@ -362,8 +398,17 @@ void freeTree(Node** source) {
     }
     freeTree(&(node->left));
     freeTree(&(node->right));
-    free(node->key);
-    free(node->value);
-    free(node);
-    *source = NULL;
+    deleteNode(source);
+}
+
+char* getKey(Node* node) {
+    return node == NULL ? NULL: node->key;
+}
+
+Node* getLeft(Node* node) {
+    return node == NULL ? NULL : node->left;
+}
+
+Node* getRight(Node* node) {
+    return node == NULL ? NULL : node->right;
 }
