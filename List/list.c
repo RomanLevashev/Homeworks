@@ -3,12 +3,19 @@
 #include <string.h>
 #include <stdio.h>
 
+typedef struct Node {
+    char* word;
+    int count;
+    struct Node* next;
+} Node;
+
 Node* createNode(char* word) {
     Node* node = malloc(sizeof(Node));
     if (node == NULL) {
+        perror("Memory allocate error");
         return NULL;
     }
-    node->word = word;
+    node->word = strdup(word);
     node->count = 1;
     node->next = NULL;
     return node;
@@ -28,7 +35,6 @@ Node* insertOrIncreaseCounter(Node* root, char* word) {
     Node* searchingNode = findNode(root, word);
     if (searchingNode != NULL) {
         (searchingNode->count)++;
-        free(word);
         return searchingNode;
     }
     Node* node = createNode(word);
@@ -36,12 +42,16 @@ Node* insertOrIncreaseCounter(Node* root, char* word) {
     return node;
 }
 
-void freeList(Node* root) {
-    if (root != NULL) {
-        freeList(root->next);
-        free(root->word);
-        free(root);
+void freeList(Node** root) {
+    Node* current = *root;
+
+    while (current != NULL) {
+        Node* temp = current->next;
+        free(current->word);
+        free(current);
+        current = temp;
     }
+    *root = NULL;
 }
 
 void printList(Node* root) {
@@ -49,4 +59,12 @@ void printList(Node* root) {
         printf("%s %d\n", root->word, root->count);
         root = root->next;
     }
+}
+
+Node* getNext(Node* node) {
+    return node == NULL ? NULL : node->next;
+}
+
+int getCount(Node* node) {
+    return node == NULL ? 0 : node->count;
 }

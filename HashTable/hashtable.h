@@ -1,17 +1,32 @@
 #pragma once
 #include "../List/list.h"
 #include <stdlib.h>
+#include <stdio.h>
 #define TABLE_SIZE 1000
 
-typedef struct HT {
-    Node* elements[TABLE_SIZE];  
-} HashTable;
+// РҐСЌС€-РўР°Р±Р»РёС†Р°
+typedef struct HT HashTable;
 
-int hashFunction(char* word); // Хэш-функция
-void initTable(HashTable* table);                   // Делает все указатели из массива нулевыми
-void addWord(HashTable* table, char* word);         // Добавляет слово в таблицу, или увеличивает счетчик
-void printTable(HashTable* table);                  // Выводит таблицу в виде (слово количество в тексте)
-void freeTable(HashTable** table);                  // Освобождает все ячейки таблицы
-double calculateLoadFactor(HashTable* table);          // Вычисляет коэффициент заполнения
-double calculateAvgListLength(HashTable* table);    // Вычисляет среднюю длину списка
-int calculateMaxListLength(HashTable* table);       // Вычисляет максимальную длину списка
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ С…СЌС€-С‚Р°Р±Р»РёС†С‹
+HashTable* initTable(void);
+
+// Р’С‹РІРѕРґРёС‚ С‚Р°Р±Р»РёС†Сѓ РІ РІРёРґРµ (СЃР»РѕРІРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ РІ С‚РµРєСЃС‚Рµ)
+void printTable(HashTable* table);
+
+// РћСЃРІРѕР±РѕР¶РґР°РµС‚ РІСЃРµ СЏС‡РµР№РєРё С‚Р°Р±Р»РёС†С‹
+void freeTable(HashTable** table);
+
+// Р’С‹С‡РёСЃР»СЏРµС‚ РєРѕСЌС„С„РёС†РёРµРЅС‚ Р·Р°РїРѕР»РЅРµРЅРёСЏ
+double calculateLoadFactor(HashTable* table);      
+
+// Р’С‹С‡РёСЃР»СЏРµС‚ СЃСЂРµРґРЅСЋСЋ РґР»РёРЅСѓ СЃРїРёСЃРєР°
+double calculateAvgListLength(HashTable* table);    
+
+// Р’С‹С‡РёСЃР»СЏРµС‚ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ РґР»РёРЅСѓ СЃРїРёСЃРєР°
+int calculateMaxListLength(HashTable* table); 
+
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‡РµС‚С‡РёРє СЌР»РµРјРµРЅС‚Р°, С…СЂР°РЅСЏС‰РёР№СЃСЏ РІ С‚Р°Р±Р»РёС†Рµ, РЅСѓР¶РµРЅ РґР»СЏ РѕС‚Р»Р°РґРєРё
+int getElementCountFromTable(HashTable* table, char* word);
+
+// РџРѕ РїРµСЂРµРґР°РЅРЅРѕРјСѓ С„Р°Р№Р»Сѓ Р·Р°РїРѕР»РЅСЏРµС‚ С…РµС€-С‚Р°Р±Р»РёС†Сѓ СЏС‡РµР№РєР°РјРё
+void parseFile(FILE* file, HashTable* table);

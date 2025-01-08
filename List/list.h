@@ -1,12 +1,21 @@
 #pragma once
 
-typedef struct Node {
-    char* word;
-    int count;
-    struct Node* next;
-} Node;
+typedef struct Node Node;
 
-Node* findNode(Node* node, char* word);                // Найти узел по слову и корню
-void freeList(Node* root);                             // Освободить память
-Node* insertOrIncreaseCounter(Node* root, char* word); // Вставляет элемент или увеличивает счетчик элемента, если он уже есть
-void printList(Node* root);                            // Печатает список в формате (слово количество)
+// РќР°Р№С‚Рё СѓР·РµР» РїРѕ СЃР»РѕРІСѓ Рё РєРѕСЂРЅСЋ
+Node* findNode(Node* node, char* word);             
+
+// РћСЃРІРѕР±РѕРґРёС‚СЊ РїР°РјСЏС‚СЊ, РІС‹РґРµР»РµРЅРЅСѓСЋ РїРѕРґ СЃРїРёСЃРѕРє
+void freeList(Node** root);                
+
+// Р’СЃС‚Р°РІР»СЏРµС‚ СЌР»РµРјРµРЅС‚ РёР»Рё СѓРІРµР»РёС‡РёРІР°РµС‚ СЃС‡РµС‚С‡РёРє СЌР»РµРјРµРЅС‚Р°, РµСЃР»Рё РѕРЅ СѓР¶Рµ РµСЃС‚СЊ
+Node* insertOrIncreaseCounter(Node* root, char* word);
+
+// РџРµС‡Р°С‚Р°РµС‚ СЃРїРёСЃРѕРє РІ С„РѕСЂРјР°С‚Рµ (СЃР»РѕРІРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ)
+void printList(Node* root);
+
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ, РЅСѓР¶РЅР° РґР»СЏ РѕС‚Р»Р°РґРєРё
+Node* getNext(Node* node);
+
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚Р° РІ С‚РµРєСЃС‚Рµ, РЅСѓР¶РЅР° РґР»СЏ РѕС‚Р»Р°РґРєРё
+int getCount(Node* node);
