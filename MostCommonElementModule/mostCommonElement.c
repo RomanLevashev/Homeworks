@@ -6,7 +6,7 @@
 int mostCommonElement(int array[], int length) {
     quickSort(array, length);
     int count = 1;
-    int max_count = 1;
+    int maxCount = 1;
     int commonElement = array[0];
     int last = array[0];
 
