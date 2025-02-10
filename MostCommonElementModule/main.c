@@ -11,16 +11,16 @@ int main(void) {
     else {
         return 1;
     }
-    int n = 10;
     FILE* inputData = fopen("file.txt", "r");
-    int* array = calloc(n, sizeof(int));
-    int i = 0;
+    int maxCount = 10;
+    int realCount = 0;
 
-    while (fscanf(inputData, "%d ", &array[i]) == 1) {
-        i++;
+    int* array = getArrayFromFile(inputData, maxCount, &realCount);
+    if (array == NULL) {
+        return 2;
     }
 
-    printf("%d", mostCommonElement(array, i + 1));
+    printf("%d", mostCommonElement(array, realCount));
     free(array);
     return 0;
 }

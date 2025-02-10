@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "test.h"
 #include "mostCommonElement.h"
@@ -33,5 +34,19 @@ bool runTests(void) {
         puts("Test 5 failed");
         return false;
     }
+
+    int maxCount = 10;
+    int realCount = 0;
+    FILE* file = fopen("test.txt", "r");
+    int* fileArray = getArrayFromFile(file, maxCount, &realCount);
+    if (fileArray == NULL) {
+        return false;
+    }
+    if (mostCommonElement(fileArray, realCount) != 62) {
+        puts("Test 6 failed");
+        free(fileArray);
+        return false;
+    }
+    free(fileArray);
     return true;
 }

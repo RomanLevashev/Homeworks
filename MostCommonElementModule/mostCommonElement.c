@@ -1,5 +1,7 @@
 #include "mostCommonElement.h"
 #include "quickSort.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 int mostCommonElement(int array[], int length) {
     quickSort(array, length);
@@ -22,4 +24,19 @@ int mostCommonElement(int array[], int length) {
         }
     }
     return commonElement;
+}
+
+int* getArrayFromFile(FILE* file, int maxCount, int* realCount) {
+    int* array = calloc(maxCount, sizeof(int));
+    if (array == NULL) {
+        perror("Ошибка выделения памяти");
+        return NULL;
+    }
+    int i = 0;
+
+    while (fscanf(file, "%d ", &array[i]) == 1) {
+        i++;
+        (*realCount)++;
+    }
+    return array;
 }

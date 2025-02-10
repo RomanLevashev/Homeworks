@@ -41,5 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="file.txt" />
+    <Text Include="test.txt" />
   </ItemGroup>
 </Project>
