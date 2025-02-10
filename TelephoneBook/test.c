@@ -8,8 +8,8 @@ bool isDigit(char* str) {
     int i = 0;
     char current = str[i];
     while (current != 0) {
-        if (current <= 57 && current >= 48) {
-            i += 1;
+        if (current <= '9' && current >= '0') {
+            ++i;
             current = str[i];
         }
         else {
@@ -21,21 +21,16 @@ bool isDigit(char* str) {
 
 int lenDigit(char* str) {
     int i = 0;
-    char current = str[i];
     int length = 0;
-    while (current == '0') {
-        i += 1;
-        current = str[i];
+    while (str[i] == '0') {
+        ++i;
     }
-    while (current != 0) {
-        length += 1;
-        i += 1;
-        current = str[i];
+    while (str[i] != '\0') {
+        ++length;
+        ++i;
     }
     return length;
 }
-
-
 
 bool runTests(void) {
     int length = 100;

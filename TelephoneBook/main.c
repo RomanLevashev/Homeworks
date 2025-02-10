@@ -6,17 +6,24 @@
 #include "test.h"
 #include "telephonebook.h"
 
-enum Options {quit, add, print, findPhoneByName, findNameByPhone, save};
+typedef enum Options {
+    quit,
+    add,
+    print,
+    findPhoneByName,
+    findNameByPhone,
+    save
+} Options;
 
 void clearBuffer() {
     char c = '\0';
     while ((c = getchar()) != '\n' && c != EOF); 
 }
 
-void chooseOption(int choice, int maxLength, FILE** file) {
+void chooseOption(Options choice, int maxLength, FILE** file) {
     switch (choice) {
     case add: {
-        printf("Введите имя до %d символов: ", maxLength-1);
+        printf("Введите имя до %d символов: ", maxLength - 1);
         char* name = calloc(maxLength, 1);
         if (name == NULL) {
             perror("Ошибка выделения памяти");
@@ -25,7 +32,7 @@ void chooseOption(int choice, int maxLength, FILE** file) {
         fgets(name, maxLength, stdin);
         name[strcspn(name, "\n")] = '\0';
 
-        printf("Введите телефон до %d символов: ", maxLength-1);
+        printf("Введите телефон до %d символов: ", maxLength - 1);
         char* phone = calloc(maxLength, 1);
         if (phone == NULL) {
             perror("Ошибка выделения памяти");
@@ -42,13 +49,13 @@ void chooseOption(int choice, int maxLength, FILE** file) {
     }
     case print: {
         fseek(*file, 0, SEEK_SET);
-        char* buffer = calloc(maxLength*2+3, 1);
+        char* buffer = calloc(maxLength * 2 + 3, 1);
         if (buffer == NULL) {
             perror("Ошибка выделения памяти");
             return;
         }
 
-        while (fgets(buffer, maxLength*2+3, *file) != NULL) {
+        while (fgets(buffer, maxLength * 2 + 3, *file) != NULL) {
             printf("%s", buffer);
         }
         free(buffer);
@@ -56,6 +63,10 @@ void chooseOption(int choice, int maxLength, FILE** file) {
     }
     case findPhoneByName: {
         char* name = calloc(maxLength, 1);
+        if (name == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
+        }
         printf("Введите имя до %d символов: ", maxLength - 1);
         fgets(name, maxLength, stdin);
         char* phone = findPhone(name, maxLength, *file);
@@ -65,6 +76,7 @@ void chooseOption(int choice, int maxLength, FILE** file) {
             free(phone);
         }
         else {
+            free(name);
             puts("Телефон не найден");
         }
         return;
@@ -72,6 +84,10 @@ void chooseOption(int choice, int maxLength, FILE** file) {
 
     case findNameByPhone: {
         char* phone = calloc(maxLength, 1);
+        if (phone == NULL) {
+            perror("Ошибка выделения памяти");
+            return;
+        }
         printf("Введите телефон до %d символов: ", maxLength - 1);
         fgets(phone, maxLength, stdin);
         char* name = findName(phone, maxLength, *file);
