@@ -4,25 +4,41 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-int postfixCalculator(char* expression, int length) {
-    int returnResult = NULL;
+bool isEmpty(StackObject* top) {
+    if (top == NULL) {
+        return true;
+    }
+    return false;
+}
+
+int calculatePostfixExpression(char* expression, int length) {
+    int returnResult = 0;
     StackObject* top = NULL;
     int result = 0;
     for (int i = 0; i < length; ++i) {
         char current = expression[i];
         if (current == '\n' || current == '\0') {
-            if (top != NULL) {
-                returnResult =  pop(&top);
-                break;
-            }
+            break;
         }
 
         if (isdigit(current)) {
-            push(&top, current - '0');
+            if (!push(&top, current - '0')) {
+                freeStack(&top);
+                return INT_MAX;
+            }
         }
 
         if (current == '+' || current == '-' || current == '*' || current == '/') {
+            if (isEmpty(top)) {
+                perror("Incorrect expression");
+                return INT_MAX - 1;
+            }
+
             int secondOperand = pop(&top);
+            if (isEmpty(top)) {
+                perror("Incorrect expression");
+                return INT_MAX - 1;
+            }
             int firstOperand = pop(&top);
             
             if (current == '+') {
@@ -39,36 +55,60 @@ int postfixCalculator(char* expression, int length) {
 
             if (current == '/') {
                 if (secondOperand == 0) {
-                    puts("You can't divide by zero");
-                    return 0;
+                    perror("Incorrect expression. Divide by zero");
+                    freeStack(&top);
+                    return INT_MAX - 2;
                 }
                 result = firstOperand / secondOperand;
             }
-            push(&top, result);
+            if (!push(&top, result)) {
+                freeStack(&top);
+                return INT_MAX;
+            }
         }
     }
-    if (top != NULL && returnResult == NULL) {
+    if (top != NULL && returnResult == 0) {
         returnResult = pop(&top);
+        if (!isEmpty(top)) {
+            perror("Incorrect expression");
+            freeStack(&top);
+            return INT_MAX - 1;
+        }
     }
-    freeStack(&top);
     return returnResult;
 }
 
 bool runTests(void) {
     const int length = 100;
-    if (postfixCalculator("3 4 + ", length) != 7) {
+    if (calculatePostfixExpression("3 4 + ", length) != 7) {
         return false;
     }
 
-    if (postfixCalculator("5 1 2 + 4 * + 3 -", length) != 14) {
+    if (calculatePostfixExpression("5 1 2 + 4 * + 3 -", length) != 14) {
         return false;
     }
 
-    if (postfixCalculator("3 4 + 2 * 7 -", length) != 7) {
+    if (calculatePostfixExpression("3 4 + 2 * 7 -", length) != 7) {
         return false;
     }
 
-    if (postfixCalculator("9 6 - 1 2 + *", length) != 9) {
+    if (calculatePostfixExpression("9 6 - 1 2 + *", length) != 9) {
+        return false;
+    }
+
+    if (calculatePostfixExpression("1 1", length) != INT_MAX - 1) {
+        return false;
+    }
+
+    if (calculatePostfixExpression("3 3 + -", length) != INT_MAX - 1) {
+        return false;
+    }
+    
+    if (calculatePostfixExpression("4 + + -", length) != INT_MAX - 1) {
+        return false;
+    }
+
+    if (calculatePostfixExpression("+ + -", length) != INT_MAX - 1) {
         return false;
     }
     return true;
@@ -87,6 +127,6 @@ int main(void) {
     puts("Enter the expression in postfix form: ");
     fgets(expression, length - 1, stdin);
 
-    printf("Result - %d", postfixCalculator(expression, length));
+    printf("Result - %d", calculatePostfixExpression(expression, length));
     return 0;
 }
