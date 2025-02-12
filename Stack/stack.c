@@ -5,7 +5,7 @@
 
 typedef struct StackObject {                  
     char data;
-    struct StackObj* next;
+    struct StackObject* next;
 } StackObject;
 
 bool push(StackObject** top, char data) {
@@ -21,7 +21,7 @@ bool push(StackObject** top, char data) {
 }
 
 char getStackTopValue(StackObject* top) {
-    return top->data;
+    return top != NULL ? top->data : '\0';
 }
 
 char pop(StackObject** top) {
