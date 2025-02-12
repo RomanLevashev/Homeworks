@@ -21,7 +21,7 @@ void addSymbolToExpression(int* resultIndex, char* resultExpression,  char curre
     *resultIndex += 2;
 }
 
-void postfixConverter(char expression[], int length, char resultExpression[]) {
+void convertToPostfix(char expression[], int length, char resultExpression[]) {
     StackObject* top = NULL;
     int resultIndex = 0;
 
@@ -35,7 +35,9 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
         }
 
         if (current == '(') {
-            push(&top, current);
+            if (!push(&top, current)) {
+                return;
+            }
         }
 
         if (current == '+' || current == '/' || current == '*' || current == '-') {
@@ -48,7 +50,9 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
                     addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
                 }
             }
-            push(&top, current);
+            if (!push(&top, current)) {
+                return;
+            }
         }
 
         if (current == ')') {
@@ -63,7 +67,6 @@ void postfixConverter(char expression[], int length, char resultExpression[]) {
     while (top != NULL) {
         addSymbolToExpression(&resultIndex, resultExpression, pop(&top));
     }
-    free(top);
 }
 
 bool runTests(void) {
@@ -72,7 +75,7 @@ bool runTests(void) {
     char result[100] = { 0 };
     char expectedResult[100] = "3 4 + 2 1 5 + - * ";
 
-    postfixConverter(expression, length, result);
+    convertToPostfix(expression, length, result);
     if (strncmp(result, expectedResult, 100) != 0) {
         return false;
     }
@@ -80,7 +83,7 @@ bool runTests(void) {
     char secondExpression[100] = "2 - 2 * 3";
     char secondResult[100] = { 0 };
     char secondExpectedResult[100] = "2 2 3 * - ";
-    postfixConverter(secondExpression, length, secondResult);
+    convertToPostfix(secondExpression, length, secondResult);
 
     if (strncmp(secondResult, secondExpectedResult, 100) != 0) {
         return false;
@@ -90,7 +93,7 @@ bool runTests(void) {
 
 void printArray(char array[], int length) {
     for (int i = 0; i < length; ++i) {
-        if (array[i] == 0) {
+        if (array[i] == '\0') {
             break;
         }
         printf("%c", array[i]);
@@ -110,7 +113,7 @@ int main(void) {
     puts("Enter the expression in infix form:");
     fgets(expression, length - 1, stdin);
 
-    postfixConverter(expression, length, resultExpression);
+    convertToPostfix(expression, length, resultExpression);
     printArray(resultExpression, length * 2);
     return 0;
 }
