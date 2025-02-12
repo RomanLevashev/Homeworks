@@ -33,8 +33,6 @@ bool runTestsForStack(void) {
     push(&top, 'c');
     push(&top, 'd');
     freeStack(&top);
-    if (top != NULL) {
-        return false;
-    }
-    return true;
+
+    return top == NULL;
 }

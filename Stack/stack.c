@@ -26,7 +26,7 @@ char getStackTopValue(StackObject* top) {
 
 char pop(StackObject** top) {
     if (*top == NULL) {
-        return NULL;
+        return '\0';
     }
     char data = (*top)->data;
     StackObject* nextObject = (*top)->next;
