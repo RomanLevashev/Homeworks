@@ -10,16 +10,21 @@ bool isBalanced(char* string, int length) {
             break;
         }
         if (string[i] == '(' || string[i] == '[' || string[i] == '{') {
-            push(&top, string[i]);
+            if (!push(&top, string[i])) {
+                freeStack(&top);
+                return false;
+            }
         }
         if (string[i] == ')' || string[i] == ']' || string[i] == '}') {
             char lastBracket = pop(&top);
             if (lastBracket == NULL) {
+                freeStack(&top);
                 return false;
             }
             if ((string[i] == ')' && lastBracket != '(') ||
                 (string[i] == ']' && lastBracket != '[') ||
                 (string[i] == '}' && lastBracket != '{')) {
+                freeStack(&top);
                 return false;
             }
         }
@@ -63,7 +68,7 @@ int main(void) {
     puts("All tests were passed successfully");
     
     const int length = 100;
-    char string[100] = { 0 };
+    char string[100] = { "\0" };
     puts("Enter a string up to 100 symbols");
     fgets(string, length - 1, stdin);
 
