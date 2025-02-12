@@ -1,10 +1,11 @@
 #pragma once
+#include <stdbool.h>
 
 // Отдельный элемент стэка
-typedef struct StackObj StackObject;
+typedef struct StackObject StackObject;
 
-// Добавляет новый элемент на вершину стэка
-void push(StackObject** top, char data);
+// Добавляет новый элемент на вершину стэка, возвращает true, если успешно, а false в противном случае
+bool push(StackObject** top, char data);
 
 // Берет элемент с вершины стэка и удаляет его
 char pop(StackObject** top);                
