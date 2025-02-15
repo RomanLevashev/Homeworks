@@ -1,5 +1,6 @@
 #pragma once
 
-#include "stdbool.h"
+#include <stdbool.h>
 
+// Запускает тесты 
 bool runTests(void);

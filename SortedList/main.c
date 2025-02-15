@@ -8,21 +8,22 @@
 enum Options {add = 1,delete, print};
 
 void clearBuffer() {
-    int c;
+    char c = '\0';
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
 void chooseOption(int choice, List* list) {
     switch (choice) {
-    case(add): {
+    case add: {
         puts("Введите число: ");
         int enterValue = 0;
         scanf("%d", &enterValue);
         clearBuffer();
+
         append(enterValue, list);
         return;
     }
-    case(delete): {
+    case delete: {
         puts("Введите число, которое хотите удалить: ");
         int enterValue = 0;
         scanf("%d", &enterValue);
@@ -30,7 +31,7 @@ void chooseOption(int choice, List* list) {
         deleteElement(enterValue, list);
         return;
     }
-    case(print): {
+    case print: {
         printList(list);
     }
     }
@@ -45,6 +46,9 @@ int main(void) {
     puts("Тесты пройдены");
 
     List* list = createList();
+    if (list == NULL) {
+        return -1;
+    }
     int choice = -1;
     do {
        puts("0 – выйти\n\
@@ -56,21 +60,5 @@ int main(void) {
          chooseOption(choice, list);
     }  while (choice != 0);
     freeList(&list);
-    /*
-    append(12, list);
-    deleteElement(12, list);
-
-    append(10, list);
-    append(7, list);
-    deleteElement(7, list);
-    append(1, list);
-    append(302, list);
-    append(1122, list);
-    append(182, list);
-    append(1092, list);
-
-    printList(list);
-
-    */
     return 0;
 }

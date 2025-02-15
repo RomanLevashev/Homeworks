@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 // Узел списка, нужен для отладки
 typedef struct Node Node;
 
@@ -19,7 +21,7 @@ int getValueFromNode(Node* node);
 List* createList(void);
 
 // Добавляет элемент в список
-void append(int value, List* list);
+bool append(int value, List* list);
 
 // Распечатывает список
 void printList(List* list);
