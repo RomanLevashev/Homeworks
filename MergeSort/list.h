@@ -17,7 +17,7 @@ void readFileToList(FILE* file, List* list);
 void printList(List* list);
 
 // Сортирует список по имени или телефону в зависимости от kind
-void mergeSort(Node** source, int kind);
+void mergeSort(List* list, int kind);
 
 // Функция сравнения, нужна для отладки
 int compare(char* first, char* second, const int length, int kind);

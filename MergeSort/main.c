@@ -5,7 +5,10 @@
 #include <stdbool.h>
 #include "test.h"
 
-enum Options {name = 1, phone};
+typedef enum Options {
+    name = 1,
+    phone = 2,
+} Options;
 
 void clearBuffer() {
     char c = '\0';
@@ -20,6 +23,10 @@ int main(void) {
     puts("Tests were passed successfully");
     
     FILE* file = fopen("input.txt", "r");
+    if (file == NULL) {
+        perror("Failed to open file");
+        return -1;
+    }
     List* list = createList();
     if (list == NULL) {
         return -1;
@@ -29,12 +36,12 @@ int main(void) {
     scanf("%d", &choice);
     readFileToList(file, list);
     switch (choice) {
-    case(name): {
-        mergeSort(getHeadPointer(list), name);
+    case name: {
+        mergeSort(list, name);
         break;
     }
-    case(phone): {
-        mergeSort(getHeadPointer(list), phone);
+    case phone: {
+        mergeSort(list, phone);
         break;
     }
     }    

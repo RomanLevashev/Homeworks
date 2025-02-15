@@ -3,8 +3,8 @@
 #include "list.h"
 #include <string.h>
 
-int maxNameLen = 50;
-int maxPhoneLen = 15;
+#define maxNameLen 50
+#define maxPhoneLen 15
 
 typedef struct Node {
     char name[51];
@@ -16,6 +16,11 @@ typedef struct List {
     Node* head;
 } List;
 
+typedef enum Options {
+    name = 1,
+    phone = 2,
+} Options;
+
 List* createList(void) {
     List* list = malloc(sizeof(List));
     if (list == NULL) {
@@ -25,28 +30,17 @@ List* createList(void) {
     list->head = NULL;
 }
 
-int compare(char* first, char* second, const int length, int kind) {
+int compare(char* first, char* second, const int length, Options kind) {
     for (int i = 0; i < length; ++i) {
-        int firstElement = first[i];
-        int secondElement = second[i];
+        char firstElement = first[i];
+        char secondElement = second[i];
 
         if (firstElement == 0) {
-            if ((secondElement != 0) && kind == 2) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
+            return (secondElement != 0) && kind == phone ? -1 : 0;
         }
         if (secondElement == 0) {
-            if ((firstElement != 0) && kind == 2) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
+            return firstElement != 0 && kind == name ? 1 : 0;
         }
- 
         if (firstElement > secondElement) {
             return 1;
         }
@@ -73,7 +67,7 @@ void split(Node* source, Node** firstHalf, Node** secondHalf) {
     Node* fast = source;
     Node* slow = source;
 
-    if (fast->next != NULL && (fast->next)->next == NULL) {
+    if (fast->next != NULL && fast->next->next == NULL) {
         *firstHalf = source;
         *secondHalf = source->next;
         source->next = NULL;
@@ -90,7 +84,7 @@ void split(Node* source, Node** firstHalf, Node** secondHalf) {
     slow->next = NULL;
 }
 
-Node* merge(Node* firstHalf, Node* secondHalf, int kind) {
+Node* merge(Node* firstHalf, Node* secondHalf, Options kind) {
     Node* leftCurrent = firstHalf;
     Node* rightCurrent = secondHalf;
     Node* result = NULL;
@@ -177,7 +171,8 @@ Node** getHeadPointer(List* list) {
     return &(list->head);
 }
 
-void mergeSort(Node** head, int kind) {
+void mergeSort(List* list, Options kind) {
+    Node** head = &(list->head);
     Node* source = *head;
     if (source == NULL || source->next == NULL) {
         return;

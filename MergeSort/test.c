@@ -3,10 +3,25 @@
 #include <stdio.h>
 #include <string.h>
 
-bool runTests() {
+bool runTests(void) {
     FILE* file = fopen("test.txt", "r");
+    if (file == NULL) {
+        perror("Failed to open file");
+        return false;
+    }
     FILE* fileWithSortedNames = fopen("testNames.txt", "r");
+    if (fileWithSortedNames == NULL) {
+        perror("Failed to open file");
+        free(file);
+        return false;
+    }
     FILE* fileWithSortedPhones = fopen("testPhones.txt", "r");
+    if (fileWithSortedNames == NULL) {
+        perror("Failed to open file");
+        free(file);
+        free(fileWithSortedNames);
+        return false;
+    }
     List* listForNames = createList();
     List* listForPhones = createList();
     List* listWithSortedNames = createList();
@@ -16,14 +31,21 @@ bool runTests() {
     readFileToList(file, listForPhones);
     readFileToList(fileWithSortedNames, listWithSortedNames);
     readFileToList(fileWithSortedPhones, listWithSortedPhones);
-    mergeSort(getHeadPointer(listForNames), 1);
-    mergeSort(getHeadPointer(listForPhones), 2);
+    mergeSort(listForNames, 1);
+    mergeSort(listForPhones, 2);
     Node* currentNames = *getHeadPointer(listForNames);
     Node* currentWantedNames = *getHeadPointer(listWithSortedNames);
 
     while (currentNames != NULL && currentWantedNames != NULL) {
         if (compare(getName(currentNames), getName(currentWantedNames), 50, 1) != 0) {
             puts("Name sort failed");
+            fclose(file);
+            fclose(fileWithSortedNames);
+            fclose(fileWithSortedPhones);
+            deleteList(&listForNames);
+            deleteList(&listForPhones);
+            deleteList(&listWithSortedNames);
+            deleteList(&listWithSortedPhones);
             return false;
         }
         currentNames = getNext(currentNames);
@@ -31,6 +53,13 @@ bool runTests() {
     }
     if (currentNames == NULL && currentWantedNames != NULL || currentWantedNames == NULL && currentNames != NULL) {
         puts("Name sort failed");
+        fclose(file);
+        fclose(fileWithSortedNames);
+        fclose(fileWithSortedPhones);
+        deleteList(&listForNames);
+        deleteList(&listForPhones);
+        deleteList(&listWithSortedNames);
+        deleteList(&listWithSortedPhones);
         return false;
     }
 
@@ -40,6 +69,13 @@ bool runTests() {
     while (currentPhones != NULL && currentWantedPhones != NULL) {
         if (compare(getPhone(currentPhones), getPhone(currentWantedPhones), 15, 2) != 0) {
             puts("Phone sort failed");
+            fclose(file);
+            fclose(fileWithSortedNames);
+            fclose(fileWithSortedPhones);
+            deleteList(&listForNames);
+            deleteList(&listForPhones);
+            deleteList(&listWithSortedNames);
+            deleteList(&listWithSortedPhones);
             return false;
         }
         currentPhones = getNext(currentPhones);
@@ -47,6 +83,13 @@ bool runTests() {
     }
     if (currentPhones == NULL && currentWantedPhones != NULL || currentPhones == NULL && currentWantedPhones != NULL) {
         puts("Phone sort failed");
+        fclose(file);
+        fclose(fileWithSortedNames);
+        fclose(fileWithSortedPhones);
+        deleteList(&listForNames);
+        deleteList(&listForPhones);
+        deleteList(&listWithSortedNames);
+        deleteList(&listWithSortedPhones);
         return false;
     }
 
