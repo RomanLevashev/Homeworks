@@ -52,6 +52,7 @@ bool runTests(void) {
     result = findPhone(firstName, length, file);
     if (strncmp(result, firstPhone, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);
@@ -59,6 +60,7 @@ bool runTests(void) {
     result = findName(secondPhone, length, file);
     if (strncmp(result, secondName, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);
@@ -66,6 +68,7 @@ bool runTests(void) {
     result = findPhone(fourthName, length, file);
     if (strncmp(result, fourthPhone, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);
@@ -73,6 +76,7 @@ bool runTests(void) {
     result = findName(thirdPhone, length, file);
     if (strncmp(result, thirdName, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);
@@ -80,6 +84,7 @@ bool runTests(void) {
     result = findPhone(fifthName, length, file);
     if (strncmp(result, fifthPhone, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);
@@ -87,6 +92,7 @@ bool runTests(void) {
     result = findName(sixthPhone, length, file);
     if (strncmp(findName(sixthPhone, length, file), sixthName, length) != 0) {
         free(result);
+        fclose(file);
         return false;
     }
     free(result);

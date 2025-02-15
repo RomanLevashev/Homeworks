@@ -49,12 +49,17 @@ char* findPhone(char* name, int maxLength, FILE* file) {
 char* findName(char* phone, int maxLength, FILE* file) {
     char* result = calloc(maxLength, 1);
     if (result == NULL) {
-        return NULL;
         perror("Ошибка выделения памяти");
+        return NULL;
     }
     int resultIndex = 0;
     char* pointer = NULL;
     char* line = calloc(maxLength * 2 + 3, 1);
+    if (line == NULL) {
+        perror("Ошибка выделения памяти");
+        free(result);
+        return NULL;
+    }
     char* fgetsResult = NULL;
 
     fseek(file, 0, SEEK_SET);
