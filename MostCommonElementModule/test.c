@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "test.h"
 #include "mostCommonElement.h"
+#include "utils.h"
 
 bool runTests(void) {
     int firstArray[20] = { 0, 2, 3, 4, 5, 5, 5, 7, 7, 5, 5, 7, 5, 5, 7, 7, 9, 1, 1, 1 };
@@ -35,10 +36,8 @@ bool runTests(void) {
         return false;
     }
 
-    int maxCount = 10;
     int realCount = 0;
-    FILE* file = fopen("test.txt", "r");
-    int* fileArray = getArrayFromFile(file, maxCount, &realCount);
+    int* fileArray = getArrayFromFile("test.txt", &realCount);
     if (fileArray == NULL) {
         return false;
     }

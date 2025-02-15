@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "quickSort.h"
 
 void swap(int* left, int* right) {
     if (left != right) {
@@ -49,5 +50,4 @@ void quickSort(int array[], int length) {
         return;
     }
     quickSort(array + 1, length - 1);
-    return;
 }

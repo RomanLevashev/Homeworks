@@ -15,28 +15,13 @@ int mostCommonElement(int array[], int length) {
             count++;
         }
         if (array[i] != last || i == length - 1) {
-            if (count > max_count) {
+            if (count > maxCount) {
                 commonElement = last;
-                max_count = count;
+                maxCount = count;
             }
             last = array[i];
             count = 1;
         }
     }
     return commonElement;
-}
-
-int* getArrayFromFile(FILE* file, int maxCount, int* realCount) {
-    int* array = calloc(maxCount, sizeof(int));
-    if (array == NULL) {
-        perror("Ошибка выделения памяти");
-        return NULL;
-    }
-    int i = 0;
-
-    while (fscanf(file, "%d ", &array[i]) == 1) {
-        i++;
-        (*realCount)++;
-    }
-    return array;
 }

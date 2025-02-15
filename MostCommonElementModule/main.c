@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "mostCommonElement.h"
 #include "test.h"
+#include "utils.h"
 
 int main(void) {
     if (runTests()) {
@@ -11,11 +12,9 @@ int main(void) {
     else {
         return 1;
     }
-    FILE* inputData = fopen("file.txt", "r");
-    int maxCount = 10;
     int realCount = 0;
 
-    int* array = getArrayFromFile(inputData, maxCount, &realCount);
+    int* array = getArrayFromFile("file.txt", &realCount);
     if (array == NULL) {
         return 2;
     }
