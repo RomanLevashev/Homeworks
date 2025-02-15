@@ -38,6 +38,10 @@ int compare(char* first, char* second, const int length, int kind) {
 bool runTests() {
     int testLength = 150;
     Tree* tree = getTree();
+    if (tree == NULL) {
+        perror("Ошибка выделения памяти");
+        return false;
+    }
     Node** rootPointer = getRootPointer(tree);
     insert(rootPointer, 123, "abc");
     insert(rootPointer, 111, "def");

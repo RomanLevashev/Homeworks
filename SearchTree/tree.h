@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 // Узел дерева
 typedef struct Node Node;
 
@@ -7,7 +9,7 @@ typedef struct Node Node;
 typedef struct Tree Tree;
 
 // Вставляет элемент в дерево
-void insert(Node** source, int key, char* value); 
+bool insert(Node** source, int key, char* value); 
 
 // Удаляет элемент по ключу
 void delete(Node** source, int key); 

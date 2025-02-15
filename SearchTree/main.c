@@ -5,10 +5,15 @@
 #include <locale.h>
 #include <stdbool.h>
 
-enum Options { add = 1, get, inDictionary, del };
-int maxLength = 150;
+#define maxLength 150
 
-
+enum Options {
+    add = 1,
+    get,
+    inDictionary,
+    del
+};
+    
 void clearBuffer() {
     char c = '\0';
     while ((c = getchar()) != '\n' && c != EOF && c != NULL);
@@ -27,11 +32,10 @@ void chooseOption(int choice, Node** root) {
     }
     case get: {
         int key = 0;
-        char* value = NULL;
         puts("Введите ключ, по которому хотите найти значение: ");
         scanf("%d", &key);
         clearBuffer();
-        value = search(*root, key);
+        char* value = search(*root, key);
         if (value == NULL) {
             puts("Значение по данному ключу не найдено");
             return;
@@ -70,6 +74,10 @@ int main(void) {
     }
     puts("Тесты прошли успешно");
     Tree* tree = getTree();
+    if (tree == NULL) {
+        perror("Ошибка выделения памяти");
+        return -1;
+    }
     Node** rootPointer = getRootPointer(tree);
     int choice = -1;
 

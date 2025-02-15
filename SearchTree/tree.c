@@ -1,6 +1,7 @@
 #include "tree.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct Node { 
     int key;
@@ -14,8 +15,7 @@ typedef struct Tree {
 } Tree;
 
 Tree* getTree(void) {
-    Tree* tree = calloc(1, sizeof(Tree));
-    return tree;
+    return calloc(1, sizeof(Tree));
 }
 
 Node** getRootPointer(Tree* tree) {
@@ -45,10 +45,13 @@ Node* createNode(int key, char* value) {
     return newElement;
 }
 
-void insert(Node** source, int key, char* value) {
+bool insert(Node** source, int key, char* value) {
     if (*source == NULL) {
         *source = createNode(key, value);
-        return;
+        if (*source == NULL) {
+            return false;
+        }
+        return true; 
     }
     Node* current = *source;
     while (current != NULL) {
@@ -56,19 +59,29 @@ void insert(Node** source, int key, char* value) {
         if (currentKey == key) {
             free(current->value);
             current->value = strdup(value);
-            return;
+            if (current->value == NULL) {
+                perror("Ошибка выделения памяти");
+                return false;
+            }
+            return true;
         }
         if (currentKey < key) {
             if (current->right == NULL) {
                 current->right = createNode(key, value);
-                return;
+                if (current->right == NULL) {
+                    return false;
+                }
+                return true;
             }
             current = current->right;
         }
         if (currentKey > key) {
             if (current->left == NULL) {
                 current->left = createNode(key, value);
-                return;
+                if (current->left == NULL) {
+                    return false;
+                }
+                return true;
             }
             current = current->left;
         }
