@@ -14,13 +14,13 @@ int main(void) {
     }
     
     puts("All tests were passed successfully");
-    HashTable* table = initTable();
+    HashTable* table = initTable(INIT_TABLE_SIZE);
 
     if (table == NULL) {
         return 2;
     }
     FILE* file = fopen("input.txt", "r");
-    parseFile(file, table);
+    parseFile(file, &table);
     fclose(file);
     printf("Load Factor  %f\n", calculateLoadFactor(table));
     printf("Average List Length  %f\n", calculateAvgListLength(table));
