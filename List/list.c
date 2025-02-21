@@ -16,6 +16,11 @@ Node* createNode(char* word) {
         return NULL;
     }
     node->word = strdup(word);
+
+    if (node->word == NULL) {
+        perror("Memory allocate error");
+        return NULL;
+    }
     node->count = 1;
     node->next = NULL;
     return node;
@@ -34,7 +39,7 @@ Node* findNode(Node* node, char* word) {
 Node* insertOrIncreaseCounter(Node* root, char* word) {
     Node* searchingNode = findNode(root, word);
     if (searchingNode != NULL) {
-        (searchingNode->count)++;
+        searchingNode->count++;
         return searchingNode;
     }
     Node* node = createNode(word);
@@ -67,4 +72,8 @@ Node* getNext(Node* node) {
 
 int getCount(Node* node) {
     return node == NULL ? 0 : node->count;
+}
+
+char* getNodeWord(Node* node) {
+    return node != NULL ? node->word : NULL;
 }

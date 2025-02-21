@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdlib.h>
+
 typedef struct Node Node;
 
 // Найти узел по слову и корню
@@ -19,3 +21,6 @@ Node* getNext(Node* node);
 
 // Возвращает количество элемента в тексте, нужна для отладки
 int getCount(Node* node);
+
+// Возвращает слово, записанное в узле
+char* getNodeWord(Node* node);

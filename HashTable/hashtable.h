@@ -2,13 +2,17 @@
 #include "../List/list.h"
 #include <stdlib.h>
 #include <stdio.h>
-#define TABLE_SIZE 1000
+#include <stdbool.h>
 
-// Хэш-Таблица
-typedef struct HT HashTable;
+#define INIT_TABLE_SIZE 1000
+#define MAX_WORD_LENGTH 150
+
+
+// Хеш-таблица
+typedef struct HashTable HashTable;
 
 // Конструктор хэш-таблицы
-HashTable* initTable(void);
+HashTable* initTable(int size);
 
 // Выводит таблицу в виде (слово количество в тексте)
 void printTable(HashTable* table);
@@ -29,4 +33,4 @@ int calculateMaxListLength(HashTable* table);
 int getElementCountFromTable(HashTable* table, char* word);
 
 // По переданному файлу заполняет хеш-таблицу ячейками
-void parseFile(FILE* file, HashTable* table);
+void parseFile(FILE* file, HashTable** table);
