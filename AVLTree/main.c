@@ -5,16 +5,25 @@
 #include <locale.h>
 #include <stdlib.h>
 
-enum Options { add = 1, get, check, del };
+typedef enum Options {
+    add = 1,
+    get,
+    check,
+    del
+} Options;
 
 void clearBuffer() {
     char c = '\0';
     while ((c = getchar()) != '\n' && c != EOF && c != NULL);
 }
 
-void chooseOption(int choice, Node** root) {
+void chooseOption(Options choice, Tree* tree) {
+    Node** rootPointer = getRootPointer(tree);
+    bool isSuccess = true;
+
     switch (choice) {
     case add: {
+        isSuccess = true;
         char key[151] = { 0 };
         char value[151] = { 0 };
         puts("Введите ключ до 150 символов: ");
@@ -23,7 +32,14 @@ void chooseOption(int choice, Node** root) {
         puts("Введите значение до 150 символов: ");
         scanf("%150s", value);
         clearBuffer();
-        insert(root, key, value);
+        insert(rootPointer, key, value, &isSuccess);
+
+        if (isSuccess) {
+            puts("Элемент успешно добавлен");
+        }
+        else {
+            puts("Элемент не добавлен");
+        }
         break;
     }
     case get: {
@@ -32,7 +48,10 @@ void chooseOption(int choice, Node** root) {
         scanf("%150s", key);
         clearBuffer();
         char* value = NULL;
-        value = search(*root, key);
+        value = search(*rootPointer, key);
+        if (value == NULL) {
+            puts("Элемент не найден");
+        }
         printf("%s\n", value);
         break;
     }
@@ -41,7 +60,7 @@ void chooseOption(int choice, Node** root) {
         puts("Введите ключ, который хотите проверить на наличие: ");
         scanf("%150s", key);
         clearBuffer();
-        if (search(*root, key) == NULL) {
+        if (search(*rootPointer, key) == NULL) {
             puts("Ключ не в списке");
         }
         else {
@@ -50,11 +69,19 @@ void chooseOption(int choice, Node** root) {
         break;
     }
     case del: {
+        isSuccess = true;
         char key[151] = { 0 };
         puts("Введите ключ, который хотите удалить: ");
         scanf("%150s", key);
         clearBuffer();
-        delete(root, root, key);
+        delete(rootPointer, key, &isSuccess);
+
+        if (isSuccess) {
+            puts("Элемент успешно удалён");
+        }
+        else {
+            puts("Элемент не удалён");
+        }
     }
     }
 }
@@ -69,7 +96,8 @@ int main(void) {
         puts("Тесты прошли успешно");
     }
 
-    Node* root = NULL;
+    
+    Tree* tree = createTree();
     int choice = -1;
 
     while (choice != 0) {
@@ -80,8 +108,9 @@ int main(void) {
 4 - Удалить значению по ключу\n");
         scanf("%d", &choice);
         clearBuffer();
-        chooseOption(choice, &root);
+        chooseOption(choice, tree);
     }
-    freeTree(&root);
+    deleteTree(getRootPointer(tree));
+    free(tree);
     return 0;
 }

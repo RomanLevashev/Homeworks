@@ -1,32 +1,38 @@
 #pragma once
 #include <stdbool.h>
 
-// Отдельный узел
+// Дерево
+typedef struct Tree Tree;
+
+// Узел дерева
 typedef struct Node Node;
 
-// Функция, которая сравнивает две строки, при этом, если в обоих строках числа - сравнение идет по их числовому значению, нужна для отладки
-int compare(char* first, char* second, const int length); 
+// Вставляет элемент в дерево, isSuccess будет true, если удачно и false в противном, изначально передавать указатель на переменную со значением true
+void insert(Node** source, char key[], char value[], bool* isSuccess);
 
-// Вставка значения в АВЛ дерево по ключу
-Node* insert(Node** nodePointer, char* key, char* value); 
+// Создает дерево
+Tree* createTree(void);
 
-// Удаляет узел по ключу из АВЛ дерева
-Node* delete(Node** nodePointer, Node** root, char* key); 
+// Удаляет узел в дереве, isSuccess будет true, если удачно и false в противном случае, изначально передавать указатель на переменную со значением true
+void delete(Node** source, char key[], bool* isSuccess);
 
-// Ищет элемент по ключу в дереве, возвращает указатель в случае наличия и NULL в противном случае
+// Удаляет все элементы дерева
+void deleteTree(Node** source);
+
+// Находит значение по ключу и возвращает, если не было найдено, то возвращает NULL
 char* search(Node* source, char* key);
 
-// Освобождает память всего дерева
-void freeTree(Node** source);
+// Возвращает указатель на корень дерева
+Node** getRootPointer(Tree* tree);
 
-// Распечатывает список прямым обходом, нужна для отладки
-void preOrder(Node* root);
-
-// Получить ключ из узла, нужна для отладки
-char* getKey(Node* node);
-
-// Получить левого потомка из узла, нужна для отладки   
+// Возвращает левого потомка, нужна для отладки
 Node* getLeft(Node* node);
 
-// Получить правого потомка из узла, нужна для отладки
+// Возвращает правого потомка, нужна для отладки
 Node* getRight(Node* node);
+
+// Возвращает баланс-фактор вершины, нужна для отладки
+int getBalanceFactor(Node* node);
+
+// Возвращает ключ вершины, нужна для отладки
+char* getKey(Node* node);

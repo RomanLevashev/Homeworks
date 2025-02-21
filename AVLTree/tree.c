@@ -12,403 +12,266 @@ typedef struct Node {
     struct Node* right;
 } Node;
 
-bool isDigit(char* str) {
-    int i = 0;
-    char current = str[i];
-    while (current != 0) {
-        if (current <= '9' && current >= '0') {
-            i += 1;
-            current = str[i];
-        }
-        else {
-            return false;
-        }
+typedef struct Tree {
+    Node* root;
+} Tree;
+
+Tree* createTree(void) {
+    Tree* tree = calloc(1, sizeof(Tree));
+    
+    if (tree == NULL) {
+        perror("Memory allocate error");
+        return NULL;
     }
-    return true;
+
+    return tree;
 }
 
-void preOrder(Node* root) {
-    if (root == NULL) return;
+Node* createNode(char key[], char value[]) {
+    Node* node = calloc(1, sizeof(Node));
 
-    printf("Key: %s, Value: %s, Height: %u\n", root->key, root->value, root->height);
-
-    preOrder(root->left);
-    preOrder(root->right);
-}
-
-int lenDigit(char* str) {
-    int i = 0;
-    char current = str[i];
-    int length = 0;
-    while (current == '0') {
-        i += 1;
-        current = str[i];
+    if (node == NULL) {
+        perror("Memory allocate error");
+        return NULL;
     }
-    while (current != 0) {
-        length += 1;
-        i += 1;
-        current = str[i];
+    node->key = strdup(key);
+    if (node->key == NULL) {
+        perror("Memory allocate error");
+        free(node);
+        return NULL;
     }
-    return length;
-}
-
-int compare(char* first, char* second, const int length) {
-    if (isDigit(first) && isDigit(second)) {
-        if (lenDigit(first) > lenDigit(second)) {
-            return 1;
-        }
-        if (lenDigit(first) < lenDigit(second)) {
-            return -1;
-        }
+    node->value = strdup(value);
+    if (node->value == NULL) {
+        perror("Memory allocate error");
+        free(node->key);
+        free(node);
+        return NULL;
     }
-    for (int i = 0; i < length; ++i) {
-        int firstElement = first[i];
-        int secondElement = second[i];
+    node->height = 1;
 
-        if (firstElement == 0) {
-            return secondElement == 0 ? 0 : 1;
-        }
-        if (secondElement == 0) {
-            return firstElement == 0 ? 0 : -1;
-        }
-
-        if (firstElement > secondElement) {
-            return 1;
-        }
-        if (firstElement < secondElement) {
-            return -1;
-        }
-    }
-    return 0;
-}
-
-int getHeight(Node* node) {
-    return node ? node->height : 0;
-}
-
-int getBalanceFactor(Node* node) {
-    return node ? getHeight(node->left) - getHeight(node->right): 0;
-}
-
-void rightRotate(Node** oldRoot, Node** newRoot) {
-    Node* tempRoot = *oldRoot;
-    *oldRoot = *newRoot;
-    Node* tempRightSubTree = (*newRoot)->right;
-    (*oldRoot)->right = tempRoot;
-    tempRoot->left = tempRightSubTree;
-}
-
-void leftRotate(Node** oldRoot, Node** newRoot) {
-    Node* tempRoot = *oldRoot;
-    *oldRoot = *newRoot;
-    Node* tempLeftSubTree = (*newRoot)->left;
-    tempRoot->right = tempLeftSubTree;
-    (*oldRoot)->left = tempRoot;
-}
-
-Node* balanceTree(Node** nodePointer) {
-    Node* node = *nodePointer;
-    int balanceFactor = getBalanceFactor(node);
-
-    if (balanceFactor > 1) {
-        int subTreeBalanceFactor = getBalanceFactor(node->left);
-        if (subTreeBalanceFactor == 1 || balanceFactor == 0) {
-            rightRotate(nodePointer, &(node->left));
-        }
-        if (subTreeBalanceFactor == -1) {
-            leftRotate(&(node->left), &((node->left)->right));
-            rightRotate(nodePointer, &(node->left));
-            node = *nodePointer;
-            updateHeight(nodePointer);
-        }
-    }
-    if (balanceFactor < -1) {
-        int subTreeBalanceFactor = getBalanceFactor(node->right);
-        if (subTreeBalanceFactor == -1 || balanceFactor == 0) {
-            leftRotate(nodePointer, &(node->right));
-        }
-        if (subTreeBalanceFactor == 1) {
-            rightRotate(&(node->right), &((node->right)->left));
-            leftRotate(nodePointer, &(node->right));
-            node = *nodePointer;
-        }
-        updateHeight(nodePointer);
-    }
     return node;
 }
 
-int updateHeight(Node** nodePointer) {
-    Node* node = *nodePointer;
-    if (!node) return 0;
+int getBalanceFactor(Node* node) {
+    int leftHeight = node->left != NULL ? node->left->height : 0;
+    int rightHeight = node->right != NULL ? node->right->height : 0;
 
-    int leftHeight = updateHeight(&(node->left));
-    int rightHeight = updateHeight(&(node->right));
-
-    node->height = 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
-    balanceTree(nodePointer);
-
-    return node->height;
+    return rightHeight - leftHeight;
 }
 
-void deleteNode(Node** node) {
-    Node* deletedNode = *node;
-    free(deletedNode->value);
-    free(deletedNode->key);
-    free(deletedNode);
-    *node = NULL;
+void updateHeight(Node* node) {
+    int leftHeight = node->left != NULL ? node->left->height : 0;
+    int rightHeight = node->right != NULL ? node->right->height : 0;
+
+    node->height = max(leftHeight, rightHeight) + 1;
 }
 
-void deleteLeaf(Node* parentDeletedElement, Node* deletedElement) {
-    if (parentDeletedElement->left == deletedElement) {
-        parentDeletedElement->left = NULL;
-    }
-    if (parentDeletedElement->right == deletedElement) {
-        parentDeletedElement->right = NULL;
-    }
-    deleteNode(&deletedElement);
-
+void smallLeftRotate(Node** source) {
+    Node* rightChild = (*source)->right;
+    (*source)->right = rightChild->left;
+    rightChild->left = *source;
+    *source = rightChild;
+    updateHeight((*source)->left);
+    updateHeight(*source);
 }
 
-void deleteNodeWithOneChild(Node* parentDeletedElement, Node* deletedElement) {
-    if (parentDeletedElement->left == deletedElement) {
-        if (deletedElement->left != NULL) {
-            parentDeletedElement->left = deletedElement->left;
-        }
-        else {
-            parentDeletedElement->left = deletedElement->right;
-        }
-    }
-    if (parentDeletedElement->right == deletedElement) {
-        if (deletedElement->left != NULL) {
-            parentDeletedElement->right = deletedElement->left;
-        }
-        else {
-            parentDeletedElement->right = deletedElement->right;
-        }
-    }
-    deleteNode(&deletedElement);
+void smallRightRotate(Node** source) {
+    Node* leftChild = (*source)->left;
+    (*source)->left = leftChild->right;
+    leftChild->right = *source;
+    *source = leftChild;
+    updateHeight((*source)->right);
+    updateHeight(*source);
 }
 
-void deleteNodeWithTwoChild(Node* deletedElement) {
-    Node* minimumRightElement = NULL;
-    Node* parentMinimumRightElement = deletedElement;
-    Node* current = deletedElement->right;
-    Node* previousElement = deletedElement;
-
-    while (current != NULL) {
-        char* currentKey = current->key;
-
-        if (minimumRightElement == NULL) {
-            minimumRightElement = current;
-        }
-        else {
-            if (compare(currentKey, minimumRightElement->key, 150) == -1) {
-                minimumRightElement = current;
-                parentMinimumRightElement = previousElement;
-            }
-        }
-        previousElement = current;
-        current = current->left;
+void balanceTree(Node** source) {
+    int balanceFactor = getBalanceFactor(*source);
+    if (abs(balanceFactor) < 2) {
+        return;
     }
 
-    if (minimumRightElement->left == NULL && minimumRightElement->right == NULL) {
-        free(deletedElement->value);
-        free(deletedElement->key);
+    if (balanceFactor > 1) {
+        Node* current = (*source)->right;
+        int rightBalanceFactor = getBalanceFactor(current);
         
-        deletedElement->value = strdup(minimumRightElement->value);
-        if (deletedElement->value == NULL) {
-            perror("Memory allocate error");
-            return;
+        if (rightBalanceFactor >= 0) {
+            smallLeftRotate(source);
         }
+        else {
+            smallRightRotate(&((*source)->right));
+            smallLeftRotate(source);
+        }
+    }
 
-        deletedElement->key = strdup(minimumRightElement->key);
-        if (deletedElement->key == NULL) {
-            free(deletedElement->value);
-            deletedElement->value = NULL;
-            perror("Memory allocate error");
-            return;
-        }
+    if (balanceFactor < -1) {
+        Node* current = (*source)->left;
+        int leftBalanceFactor = getBalanceFactor(current);
 
-        if (parentMinimumRightElement->left == minimumRightElement) {
-            parentMinimumRightElement->left = NULL;
+        if (leftBalanceFactor <= 0) {
+            smallRightRotate(source);
         }
-        if (parentMinimumRightElement->right == minimumRightElement) {
-            parentMinimumRightElement->right = NULL;
+        else {
+            smallLeftRotate(&((*source)->left));
+            smallRightRotate(source);
         }
-        deleteNode(&minimumRightElement);
-        return;
     }
-    free(deletedElement->value);
-    free(deletedElement->key);
-    deletedElement->value = strdup(minimumRightElement->value);
-    if (deletedElement->value == NULL) {
-        perror("Memory allocate error");
-        return;
-    }
-    deletedElement->key = strdup(minimumRightElement->key);
-    if (deletedElement->key == NULL) {
-        free(deletedElement->key);
-        deletedElement->key == NULL;
-        perror("Memory allocate error");
-        return;
-    }
-    deleteNodeWithOneChild(parentMinimumRightElement, minimumRightElement);
 }
 
-Node* delete(Node** nodePointer, Node** root, char* key) {
+void deleteNode(Node** nodePointer) {
     Node* node = *nodePointer;
-    if (node == NULL) {
-        return NULL;
-    }
-    Node* deletedElement = NULL;
-    if (compare((*root)->key, key, 150) == 0) {
-        if (node->left == NULL && node->right == NULL) {
-            free(node->value);
-            free(node->key);
-            free(node);
-            *nodePointer = NULL;
-            return NULL;
-        }
-        if (node->left != NULL && node->right == NULL) {
-            *root = node->left;
-            free(node->value);
-            free(node->key);
-            free(node);
-            return NULL;
-        }
-        if (node->right != NULL && node->left == NULL) {
-            root = node->right;
-            free(node->value);
-            free(node->key);
-            free(node);
-            return NULL;
-        }
-        deletedElement = *root;
-    }
-    if (node == NULL) {
-        return;
-    }
-    int result = compare(key, (*nodePointer)->key, 150);
 
-    if (result == -1) {
-        deletedElement = delete(&(node->left), root, key);
-    }
-    if (result == 1) {
-        deletedElement = delete(&(node->right), root, key);
-    }
-    if (result == 0 && compare((*root)->key, key, 150) != 0) {
-        return node;
-    }
-    if (deletedElement != NULL) {
-        if (deletedElement->left == NULL && deletedElement->right == NULL) {
-            deleteLeaf(node, deletedElement);
-            updateHeight(nodePointer);
-            return NULL;
-        }
-
-        if (deletedElement->left != NULL && deletedElement->right != NULL) {
-            deleteNodeWithTwoChild(deletedElement);
-            updateHeight(nodePointer);
-            return NULL;
-        }
-
-        if (deletedElement->left != NULL || deletedElement->right != NULL) {
-            deleteNodeWithOneChild(node, deletedElement);
-            updateHeight(nodePointer);
-            return NULL;
-        }
-    }
-    return NULL;
+    free(node->key);
+    free(node->value);
+    free(node);
+    *nodePointer = NULL;
 }
 
-Node* insert(Node** nodePointer, char* key, char* value) {
-    Node* node = *nodePointer;
-    if (node == NULL) {
-        Node* newNode = malloc(sizeof(Node));
+void insert(Node** source, char key[], char value[], bool* isSuccess) {
+    if (*source == NULL) {
+        Node* newNode = createNode(key, value);
         if (newNode == NULL) {
-            perror("Memory allocate error");
-            return NULL;
+            *isSuccess = false;
         }
-        newNode->key = strdup(key);
-        if (newNode->key == NULL) {
-            perror("Memory allocate error");
-            free(newNode);
-            return NULL;
-        }
-        newNode->value = strdup(value);
-        if (newNode->value == NULL) {
-            perror("Memory allocate error");
-            free(newNode->key);
-            free(newNode);
-            return NULL;
-        }
-        newNode->height = 1;
-        newNode->left = NULL;
-        newNode->right = NULL;
-        *nodePointer = newNode;
-        return newNode;
+        *source = newNode;
+        return;
     }
 
-    int result = compare(key, node->key, 150);
+    if (strcmp((*source)->key, key) == 0) {
+        char* newValue = strdup(value);
+        if (newValue == NULL) {
+            perror("Memory allocate error");
+            *isSuccess = false;
+            return;
+        }
 
-    if (result == -1) {
-        node->left = insert(&(node->left), key, value);
-        updateHeight(nodePointer);
+        free((*source)->value);
+        (*source)->value = newValue;
+
+        return;
     }
-    if (result == 1) {
-        node->right = insert(&(node->right), key, value);
-        updateHeight(nodePointer);
+
+    if (strcmp((*source)->key, key) == 1) {
+        insert(&((*source)->left), key, value, isSuccess);
     }
-    if (result == 0) {
-        free(node->value);
-        node->value = value;
+
+    if (strcmp((*source)->key, key) == -1) {
+        insert(&((*source)->right), key, value, isSuccess);
     }
-    
-    return *nodePointer;
+
+    if (!*isSuccess) {
+        return;
+    }
+
+    updateHeight(*source);
+    balanceTree(source);
 }
 
 char* search(Node* source, char* key) {
-    Node* current = source;
-
-    while (current != NULL) {
-        char* currentKey = current->key;
-        if (compare(currentKey, key, 150) == 0) {
-            return current->value;
-        }
-        if (compare(currentKey, key, 150) == -1) {
-            if (current->right == NULL) {
-                return NULL;
-            }
-            current = current->right;
-        }
-        if (compare(currentKey, key, 150) == 1) {
-            if (current->left == NULL) {
-                return NULL;
-            }
-            current = current->left;
-        }
+    if (source == NULL) {
+        return NULL;
     }
-    return NULL;
+    if (strcmp(key, source->key) == 0) {
+        return source->value;
+    }
+
+    if (strcmp(key, source->key) == 1) {
+        return search(source->right, key);
+    }
+
+    if (strcmp(key, source->key) == -1) {
+        return search(source->left, key);
+    }
 }
 
-void freeTree(Node** source) {
-    Node* node = *source;
-    if (node == NULL) {
+void deleteNodeWithOneChild(Node** nodePointer) {
+    Node* node = *nodePointer;
+    Node* temp = node->left != NULL? node->left: node->right; 
+    deleteNode(nodePointer);
+    *nodePointer = temp;
+}
+
+Node* findMinInRightSubTreeAndDelete(Node** nodePointer) {
+    Node* node = *nodePointer;
+
+    if (node->left == NULL) {
+        *nodePointer = node->right;
+        return node;
+    }
+
+    Node* deletedNode = findMinInRightSubTreeAndDelete(&(node->left));
+    updateHeight(node);
+    balanceTree(nodePointer);
+    return deletedNode;
+}
+
+void delete(Node** source, char key[], bool* isSuccess) {
+    Node* currentNode = *source;
+    if (*source == NULL) {
+        *isSuccess = false;
         return;
     }
-    freeTree(&(node->left));
-    freeTree(&(node->right));
+
+    int compareResult = strcmp(currentNode->key, key);
+
+    if (compareResult == 0) {
+        int childCount = ((*source)->left != NULL) + ((*source)->right != NULL);
+        if (childCount == 0) {
+            deleteNode(source);
+            return;
+        }
+
+        if (childCount == 1) {
+            deleteNodeWithOneChild(source);
+            return;
+        }
+
+        if (childCount == 2) {
+            Node* temp = findMinInRightSubTreeAndDelete(&(currentNode->right));
+            free(currentNode->key);
+            free(currentNode->value);
+            currentNode->key = temp->key;
+            currentNode->value = temp->value;
+            free(temp);
+        }
+    }
+
+    if (compareResult == -1) {
+        delete(&(currentNode->right), key, isSuccess);
+    }
+
+    if (compareResult == 1) {
+        delete(&(currentNode->left), key, isSuccess);
+    }
+
+    if (!*isSuccess) {
+        return;
+    }
+
+    updateHeight(*source);
+    balanceTree(source);
+}
+
+void deleteTree(Node** source) {
+    if (*source == NULL) {
+        return;
+    }
+    deleteTree(&((*source)->left));
+    deleteTree(&((*source)->right));
     deleteNode(source);
 }
 
-char* getKey(Node* node) {
-    return node == NULL ? NULL: node->key;
+Node** getRootPointer(Tree* tree) {
+    return tree != NULL ? &(tree->root): NULL;
 }
 
 Node* getLeft(Node* node) {
-    return node == NULL ? NULL : node->left;
+    return node != NULL ? node->left : NULL;
 }
 
 Node* getRight(Node* node) {
-    return node == NULL ? NULL : node->right;
+    return node != NULL ? node->right : NULL;
+}
+
+char* getKey(Node* node) {
+    return node != NULL? node->key: NULL;
 }

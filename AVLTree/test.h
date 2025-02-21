@@ -3,4 +3,4 @@
 #include <stdbool.h>
 
 // Запускает тесты
-bool runTest(void);
+bool runTests(void);
