@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 
 int fibonacciRec(int number) {
 	if (number == 1 || number == 2) {
@@ -28,44 +29,31 @@ int fibonacciIter(int number) {
 }
 
 bool test() {
-	if (fibonacciIter(7) == 13 && fibonacciRec(7) == 13) {
-		puts("Test 1 complete");
-	}
-	else {
-		puts("Test 1 failed");
+	if (fibonacciIter(7) != 13 || fibonacciRec(7) != 13) {
 		return false;
 	}
 
-	if (fibonacciIter(8) == 21 && fibonacciRec(8) == 21) {
-		puts("Test 2 complete");
-	}
-	else {
-		puts("Test 2 failed");
+	if (fibonacciIter(8) != 21 || fibonacciRec(8) != 21) {
 		return false;
 	}
 
-	if (fibonacciIter(9) == 34 && fibonacciRec(9) == 34) {
-		puts("Test 3 complete");
-	}
-	else {
-		puts("Test 3 failed");
+	if (fibonacciIter(9) != 34 || fibonacciRec(9) != 34) {
 		return false;
 	}
 
-	if (fibonacciIter(10) == 55 && fibonacciRec(10) == 55) {
-		puts("Test 4 complete");
-	}
-	else {
-		puts("Test 4 failed");
+	if (fibonacciIter(10) != 55 || fibonacciRec(10) != 55) {
 		return false;
 	}
-
 	return true;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
 	if (!test()) {
 		return 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
 	}
 
 	for (int i = 1; i < 45; ++i) {

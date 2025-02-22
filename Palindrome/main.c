@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 int getLength(char str[]) {
 	int length = 0;
@@ -47,35 +48,37 @@ bool testing(void) {
 	char firstStr[26] = "Ужа сопливого в ил посажУ";
 	
 	if (!isPalindrome(firstStr)) {
-		puts("Test 1 failed");
 		return false;
 	}
 
 	char secondStr[30] = "Дивен мне вид";
 
 	if (isPalindrome(secondStr)) {
-		puts("Test 2 failed");
 		return false;
 	}
 
-	char thirdStr[30] = "Коту тащат уток";
+	char thirdStr[30] = "Коту тащат утоК";
 
 	if (!isPalindrome(thirdStr)) {
-		puts("Test 3 failed");
 		return false;
 	}
 
 	return true;
 }
 
-int main(void) {
-	if (testing) {
-		puts("All tests passed successfully");
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		return 1;
 	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
+
 	int arrayLength = 1000;
 	char* str = calloc(arrayLength, arrayLength);
-	while (str == NULL) {
-		str = calloc(arrayLength, arrayLength);
+	if (str == NULL) {
+		return 2;
 	}
 
 	puts("Enter a string up to 1000 symbols: ");

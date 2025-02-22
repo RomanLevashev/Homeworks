@@ -22,49 +22,38 @@ bool isBalance(char str[], int length) {
 }
 
 bool testing(void) {
-	if (isBalance("(())((()))()", 12)) {
-		printf("Test 1 complete\n");
-	}
-	else {
-		printf("Test 1 failed\n");
+	if (!isBalance("(())((()))()", 12)) {
 		return false;
 	}
 
-	if (!(isBalance("))((", 4))) {
-		printf("Test 2 complete\n");
-	}
-	else {
-		printf("Test 2 failed\n");
+	if ((isBalance("))((", 4))) {
 		return false;
 	}
 
-	if (!(isBalance("())(", 4))) {
-		printf("Test 3 complete\n");
-	}
-	else {
-		printf("Test 3 failed\n");
+	if ((isBalance("())(", 4))) {
 		return false;
 	}
 
-	if (isBalance("()(())(((())))", 14)) {
-		printf("Test 4 complete\n");
-	}
-	else {
+	if (!isBalance("()(())(((())))", 14)) {
 		return false;
-		printf("Test 4 failed\n");
 	}
 
 	return true;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		puts("Tests failed");
+		return 1;
+	}
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
 	char str[1001] = { 0 };
 	printf("Enter a string up to 1000 elements: ");
 	fgets(str, 1000, stdin);
 
 	printf(isBalance(str, strlen(str)) ? "Balanced\n" : "Not balanced\n");
-	if (testing()) {
-		puts("All tests passed successfully");
-	}
+
 	return 0;
 }

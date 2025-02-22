@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-
+#include <string.h>
 
 double linearExponentiation(int digit, int degree) {
 	if (degree == 0) {
@@ -37,51 +37,36 @@ double logarifmicExponentiation(int digit, int degree) {
 
 
 bool testing(void) {
-	if (logarifmicExponentiation(2, 9) == 512 && linearExponentiation(2, 9) == 512) {
-		puts("Test 1 complete");
-	}
-	else {
-		puts("Test 1 failed");
+	if (logarifmicExponentiation(2, 9) != 512 || linearExponentiation(2, 9) != 512) {
 		return false;
 	}
 
-	if (logarifmicExponentiation(2, -3) == 0.125 && linearExponentiation(2, -3) == 0.125) {
-		puts("Test 2 complete");
-	}
-	else {
-		puts("Test 2 failed");
+	if (logarifmicExponentiation(2, -3) != 0.125 || linearExponentiation(2, -3) != 0.125) {
 		return false;
 	}
 
-	if (logarifmicExponentiation(-2, 9) == -512 && linearExponentiation(-2, 9) == -512) {
-		puts("Test 3 complete");
-	}
-	else {
-		puts("Test 3 failed");
+	if (logarifmicExponentiation(-2, 9) != -512 || linearExponentiation(-2, 9) != -512) {
 		return false;
 	}
 
-	if (logarifmicExponentiation(-2, 8) == 256 && linearExponentiation(-2, 8) == 256) {
-		puts("Test 4 complete");
-	}
-	else {
-		puts("Test 4 failed");
+	if (logarifmicExponentiation(-2, 8) != 256 || linearExponentiation(-2, 8) != 256) {
 		return false;
 	}
 
-	if (logarifmicExponentiation(-2, -3) == -0.125 && linearExponentiation(-2, -3) == -0.125) {
-		puts("Test 5 complete");
-	}
-	else {
-		puts("Test 5 failed");
+	if (logarifmicExponentiation(-2, -3) != -0.125 || linearExponentiation(-2, -3) != -0.125) {
 		return false;
 	}
 
 }
 
 
-int main(void) {
-	//testing();
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		return 1;
+	}
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
 	double a = logarifmicExponentiation(2, -3);
 	printf("%.2f", a);
 	return 0;

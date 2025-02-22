@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 void swap(int* left, int* right) {
 	if (left != right) {
@@ -71,23 +72,27 @@ bool test() {
 
 		if (needMore) {
 			if (array[i] < pivot) {
-				puts("Test failed\n");
 				return false;
 			}
 		}
 
 		else {
 			if (array[i] > pivot) {
-				puts("Test failed\n");
 				return false;
 			}
 		}
 	}
-	puts("Test complete\n");
 	return true;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	if (!test()) {
+		return 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
 	srand(time(NULL));
 	int array[20] = { 0 };
 
@@ -98,6 +103,5 @@ int main(void) {
 	printArray(array, 20);
 	qSort(array, 20);
 	printArray(array, 20);
-	//test();
 	return 0;
 }

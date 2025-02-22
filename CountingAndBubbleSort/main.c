@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 void swap(int *left, int *right) {
 	if (left != right) {
@@ -64,10 +65,10 @@ bool testing(int array[], int length, void (*sort)(int*, int)) {
 	return true;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
 	const int length = 100000;
-	int *array = NULL;
-	int *copyArray = NULL;
+	int* array = NULL;
+	int* copyArray = NULL;
 
 	while (array == NULL) {
 		array = calloc(length, sizeof(int));
@@ -78,27 +79,28 @@ int main(void) {
 	}
 
 	srand(time(NULL));
-	
+
 	for (int i = 0; i < length; ++i) {
 		int temp = rand();
 		array[i] = copyArray[i] = temp;
 	}
+	
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		if (!testing(array, length, countingSort)) {
+			free(array);
+			free(copyArray);
+			return 1;
+		}
+		if (!testing(copyArray, length, bubbleSort)) {
+			free(array);
+			free(copyArray);
+			return 1;
+		}
+		free(array);
+		free(copyArray);
+		return 0;
+	}
 
-/*
-	if (testing(array, length, countingSort)) {
-		puts("Counting sort passed the test.");
-	}
-	else {
-		puts("Counting sort didn't pass the test.");
-	}
-
-	if (testing(copyArray, length, bubbleSort)) {
-		puts("Bubble sort passeed the test.");
-	}
-	else {
-		puts("Bubble sort didn't passed the test.");
-	}
-*/	
 
 	clock_t beforeBubble = clock();
 	bubbleSort(array, length);

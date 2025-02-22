@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
-
+#include <string.h>
 
 int incompleteQuotient(int dividend, int divisor) {
 	if (dividend == 0) {
@@ -33,52 +33,38 @@ int incompleteQuotient(int dividend, int divisor) {
 	return quotient;
 }
 
-void testing() {
-	if (incompleteQuotient(78, 33) == 2) {
-		printf("Test 1 complete\n");
-	}
-	else {
-		printf("Test 1 failed\n");
+bool testing() {
+	if (incompleteQuotient(78, 33) != 2) {
 		return false;
 	}
 
-	if (incompleteQuotient(-78, 33) == -3) {
-		printf("Test 2 complete\n");
-	}
-	else {
-		printf("Test 2 failed\n");
+	if (incompleteQuotient(-78, 33) != -3) {
 		return false;
 	}
 
-	if (incompleteQuotient(-9, -13) == 1) {
-		printf("Test 3 complete\n");
-	}
-	else {
-		printf("Test 3 failed\n");
+	if (incompleteQuotient(-9, -13) != 1) {
 		return false;
 	}
 
-	if (incompleteQuotient(9, 90) == 0) {
-		printf("Test 4 complete\n");
-	}
-	else {
-		printf("Test 4 failed\n");
+	if (incompleteQuotient(9, 90) != 0) {
 		return false;
 	}
 
-	if (incompleteQuotient(78, 26) == 3) {
-		printf("Test 5 complete\n");
-		return true;
-	}
-	else {
-		printf("Test 5 failed\n");
+	if (incompleteQuotient(78, 26) != 3) {
 		return false;
 	}
 }
 
 
-int main(void) {
-	// testing();
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		return 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
+
 	int dividend = 0, divisor = 0;
 	printf("Enter dividend and divisor through a space: ");
 	scanf("%d %d", &dividend, &divisor);

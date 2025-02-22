@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <string.h>
 
 void shellSort(int array[], int length) {
 	int j = 0;
@@ -34,8 +35,11 @@ bool testing(void) {
 	int firstArray[15] = {9, 0, 3, 1, 4, 6, 8, 15, 100, 20, 1, 10000};
 	int secondArray[15] = {1, 2, 9, 3, 7, 15, 29, 30, 1999, 2789, 1, 12097398};
 	int thirdArray[15] = {0, 15555, 1290390, 123970, 791221, 10202, 2822882, 123902, 91863291};
+	shellSort(firstArray, length);
+	shellSort(secondArray, length);
+	shellSort(thirdArray, length);
 
-	for (int i = 0; i < length; ++i) {
+	for (int i = 0; i < length-1; ++i) {
 		if (firstArray[i] > firstArray[i + 1] || secondArray[i] > secondArray[i + 1] || thirdArray[i] > thirdArray[i + 1]) {
 			return false;
 		}
@@ -43,12 +47,13 @@ bool testing(void) {
 	return true;
 }
 
-int main(void) {
-	if (testing) {
-		puts("All test passed successfully");
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		return 1;
 	}
-	else {
-		puts("Test failed");
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
 	}
 
 	int length = 20;

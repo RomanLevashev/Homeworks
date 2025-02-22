@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <string.h>	
 
-
 int countSubstringInString(char string[], char subString[]) {
 	int i = 0;
 	int count = 0;
@@ -25,34 +24,30 @@ int countSubstringInString(char string[], char subString[]) {
 }
 
 bool testing(void) {
-	if (countSubstringInString("asd", "") == 0) {
-		printf("Test 1 complete\n");
-	}
-	else {
-		printf("Test 1 failed\n");
+	if (countSubstringInString("asd", "") != 0) {
 		return false;
 	}
 
-	if (countSubstringInString("asdaaaasdbjkolkjaa", "a") == 7) {
-		printf("Test 2 complete\n");
-	}
-	else {
-		printf("Test 2 failed\n");
+	if (countSubstringInString("asdaaaasdbjkolkjaa", "a") != 7) {
 		return false;
 	}
 
-	if (countSubstringInString("asdjkljkllkj;bnmasdkkkkasdjl;qwehjklasdasd", "asd") == 5) {
-		printf("Test 3 complete\n");
-	}
-	else {
-		printf("Test 3 failed\n");
+	if (countSubstringInString("asdjkljkllkj;bnmasdkkkkasdjl;qwehjklasdasd", "asd") != 5) {
 		return false;
 	}
 	return true;
 }
 
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	if (!testing()) {
+		return 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
+
 	char string[1001] = { 0 };
 	char substring[1001] = { 0 };
 	puts("Enter a string up to 1000 elements: ");
@@ -61,10 +56,6 @@ int main(void) {
 	fgets(substring, 1000, stdin);
 
 	printf("Count of substring in stirng: %d\n", countSubstringInString(string, substring));
-
-	if (testing()) {
-		puts("All tests passed successfully");
-	}
 
 	return 0;
 }

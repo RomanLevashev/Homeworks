@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 void swap(int* left, int* right) {
 	if (left != right) {
@@ -87,34 +88,28 @@ void printArray(int array[], int length) {
 bool testing() {
 	const int length = 20;
 	int array[20] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -7, -1, - 30, -5, -229, -137};
+	quickSort(array, length);
 	
 	if (!inArray(array, length, 0)) {
-		puts("Test 1 failed");
 		return false;
 	}
 	if (!inArray(array, length, 9)) {
-		puts("Test 2 failed");
 		return false;
 	}
 
 	if (!inArray(array, length, 2)) {
-		puts("Test 3 failed");
 		return false;
 	}
-	return true;
 
 	if (!inArray(array, length, -30)) {
-		puts("Test 4 failed");
 		return false;
 	}
 
 	if (!inArray(array, length, -229)) {
-		puts("Test 5 failed");
 		return false;
 	}
 
 	if (!inArray(array, length, -7)) {
-		puts("Test 3 failed");
 		return false;
 	}
 	return true;
@@ -137,13 +132,15 @@ void search(int n, int nArray[], int k, int kArray[]) {
 	}
 }
 
-int main(void) {
-	if (testing()) {
-		puts("All test passed successfully");
-	}
-	else {
+int main(int argc, char* argv[]) {
+	if (!testing()) {
 		return 1;
 	}
+
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
+
 	srand(time(NULL));
 	int n = 0;
 	int k = 0;

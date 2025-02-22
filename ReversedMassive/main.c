@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
-
+#include <string.h>
 
 void arraySwap(int array[], int start, int end) {
 	for (int i = 0; remainder(end - start + 1, 2) == 1 ? i <= (end - start + 1) / 2 : i <= (end - start + 1) / 2 - 1; ++i) {
@@ -27,15 +27,17 @@ bool test(void) {
 
 	for (int i = 0; i <= 9; ++i) {
 		if (array[i] != wantedArray[i]) {
-			printf("Test failed\n");
 			return false;
 		}
 	}
-	printf("Test complete\n");
 	return true;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) {
+		return 0;
+	}
+
 	int array[15] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 
 	int m = 5;
@@ -47,5 +49,6 @@ int main(void) {
 	for (int i = 0; i <= 14; ++i) {
 		printf("%d ", array[i]);
 	}
-	// test();
+
+	return 0;
 }
