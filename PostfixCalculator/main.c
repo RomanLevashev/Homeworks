@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 bool isEmpty(StackObject* top) {
     if (top == NULL) {
@@ -11,8 +12,8 @@ bool isEmpty(StackObject* top) {
     return false;
 }
 
-int calculatePostfixExpression(char* expression, int length) {
-    int returnResult = 0;
+int calculatePostfixExpression(char* expression) {
+    int length = strlen(expression);
     StackObject* top = NULL;
     int result = 0;
     for (int i = 0; i < length; ++i) {
@@ -67,7 +68,8 @@ int calculatePostfixExpression(char* expression, int length) {
             }
         }
     }
-    if (top != NULL && returnResult == 0) {
+    int returnResult = 0;
+    if (top != NULL) {
         returnResult = pop(&top);
         if (!isEmpty(top)) {
             perror("Incorrect expression");
@@ -80,35 +82,35 @@ int calculatePostfixExpression(char* expression, int length) {
 
 bool runTests(void) {
     const int length = 100;
-    if (calculatePostfixExpression("3 4 + ", length) != 7) {
+    if (calculatePostfixExpression("3 4 + ") != 7) {
         return false;
     }
 
-    if (calculatePostfixExpression("5 1 2 + 4 * + 3 -", length) != 14) {
+    if (calculatePostfixExpression("5 1 2 + 4 * + 3 -") != 14) {
         return false;
     }
 
-    if (calculatePostfixExpression("3 4 + 2 * 7 -", length) != 7) {
+    if (calculatePostfixExpression("3 4 + 2 * 7 -") != 7) {
         return false;
     }
 
-    if (calculatePostfixExpression("9 6 - 1 2 + *", length) != 9) {
+    if (calculatePostfixExpression("9 6 - 1 2 + *") != 9) {
         return false;
     }
 
-    if (calculatePostfixExpression("1 1", length) != INT_MAX - 1) {
+    if (calculatePostfixExpression("1 1") != INT_MAX - 1) {
         return false;
     }
 
-    if (calculatePostfixExpression("3 3 + -", length) != INT_MAX - 1) {
+    if (calculatePostfixExpression("3 3 + -") != INT_MAX - 1) {
         return false;
     }
     
-    if (calculatePostfixExpression("4 + + -", length) != INT_MAX - 1) {
+    if (calculatePostfixExpression("4 + + -") != INT_MAX - 1) {
         return false;
     }
 
-    if (calculatePostfixExpression("+ + -", length) != INT_MAX - 1) {
+    if (calculatePostfixExpression("+ + -") != INT_MAX - 1) {
         return false;
     }
     return true;
@@ -127,6 +129,6 @@ int main(void) {
     puts("Enter the expression in postfix form: ");
     fgets(expression, length - 1, stdin);
 
-    printf("Result - %d", calculatePostfixExpression(expression, length));
+    printf("Result - %d", calculatePostfixExpression(expression));
     return 0;
 }
