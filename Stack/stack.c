@@ -28,7 +28,7 @@ int pop(StackObject** top) {
     if (*top == NULL) {
         return INT_MAX;
     }
-    char data = (*top)->data;
+    int data = (*top)->data;
     StackObject* nextObject = (*top)->next;
     free(*top);
     *top = nextObject;
