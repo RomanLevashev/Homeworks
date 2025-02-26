@@ -8,7 +8,7 @@ typedef struct StackObject {
     struct StackObject* next;
 } StackObject;
 
-bool push(StackObject** top, char data) {
+bool push(StackObject** top, int data) {
     StackObject* pointer = malloc(sizeof(StackObject));
     if (pointer == NULL) {
         perror("Memory allocate error");
@@ -24,9 +24,9 @@ char getStackTopValue(StackObject* top) {
     return top != NULL ? top->data : '\0';
 }
 
-char pop(StackObject** top) {
+int pop(StackObject** top) {
     if (*top == NULL) {
-        return '\0';
+        return INT_MAX;
     }
     char data = (*top)->data;
     StackObject* nextObject = (*top)->next;
