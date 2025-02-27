@@ -6,10 +6,7 @@
 #include <string.h>
 
 bool isEmpty(StackObject* top) {
-    if (top == NULL) {
-        return true;
-    }
-    return false;
+    return top == NULL;
 }
 
 int calculatePostfixExpression(char* expression) {
